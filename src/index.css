@@ -1,0 +1,84 @@
+@import "tailwindcss";
+
+@layer utilities {
+  @keyframes spinPropeller {
+    0% { transform: rotate(0deg); }
+    100% { transform: rotate(360deg); }
+  }
+
+  @keyframes ledBlinkFast {
+    0%, 100% { opacity: 1; }
+    50% { opacity: 0.2; }
+  }
+
+  @keyframes ledBlinkSlow {
+    0%, 100% { opacity: 1; }
+    50% { opacity: 0.3; }
+  }
+
+  @keyframes pulseGlowRed {
+    0%, 100% { box-shadow: 0 0 15px rgba(239, 68, 68, 0.8), 0 0 30px rgba(239, 68, 68, 0.4); }
+    50% { box-shadow: 0 0 35px rgba(239, 68, 68, 1), 0 0 60px rgba(239, 68, 68, 0.7); }
+  }
+
+  .animate-spin-prop {
+    animation: spinPropeller 0.15s linear infinite;
+  }
+
+  .animate-led-fast {
+    animation: ledBlinkFast 0.3s ease-in-out infinite;
+  }
+
+  .animate-led-slow {
+    animation: ledBlinkSlow 1s ease-in-out infinite;
+  }
+
+  .animate-pulse-glow-red {
+    animation: pulseGlowRed 0.8s ease-in-out infinite;
+  }
+}
+
+/* Custom scrollbars */
+::-webkit-scrollbar {
+  width: 6px;
+  height: 6px;
+}
+
+::-webkit-scrollbar-track {
+  background: #0f172a;
+}
+
+::-webkit-scrollbar-thumb {
+  background: #334155;
+  border-radius: 3px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: #475569;
+}
+
+body {
+  margin: 0;
+  padding: 0;
+  background-color: #080c14;
+  color: #f8fafc;
+  font-family: ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+  overflow-x: hidden;
+}
+
+.glass-card {
+  background: rgba(15, 23, 42, 0.75);
+  backdrop-filter: blur(12px);
+  border: 1px solid rgba(51, 65, 85, 0.5);
+  box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.37);
+}
+
+.gcs-panel {
+  background: #0d1322;
+  border: 1px solid #1e293b;
+}
+
+.gcs-header {
+  background: #0a0f1d;
+  border-bottom: 1px solid #1e293b;
+}
