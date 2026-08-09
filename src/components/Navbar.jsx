@@ -10,9 +10,11 @@ import {
   Compass,
   Radio,
   Zap,
-  HelpCircle,
   Activity,
-  Layers
+  Layers,
+  Navigation,
+  Lock,
+  FlaskConical
 } from 'lucide-react';
 
 export const Navbar = () => {
@@ -27,18 +29,24 @@ export const Navbar = () => {
     setActiveTab,
     soundMuted,
     toggleSound,
-    fcPower,
-    firmwareInstalled,
+    allCalibrationsDone,
+    bypassAllCalibrations,
   } = useSimulator();
+
+  const handleDevBypass = () => {
+    bypassAllCalibrations();
+    // Auto-navigate to SITL after a short delay (so confetti plays first)
+    setTimeout(() => setActiveTab('sitl'), 400);
+  };
 
   const tabs = [
     { id: 'bench', label: '1. Virtual Bench', icon: Wrench },
-    { id: 'flashing', label: '2. Firmware Flashing', icon: Cpu },
+    { id: 'flashing', label: '2. Firmware Flash', icon: Cpu },
     { id: 'accel', label: '3. Accel (6-Axis)', icon: Activity },
     { id: 'compass', label: '4. Compass 3D', icon: Compass },
     { id: 'radio', label: '5. Radio Setup', icon: Radio },
     { id: 'esc', label: '6. ESC Throttle', icon: Zap },
-    { id: 'quiz', label: '7. Troubleshooting Quiz', icon: HelpCircle },
+    { id: 'sitl', label: '7. 3D SITL Arena 🚀', icon: Navigation, requiresCalib: true },
   ];
 
   return (
@@ -58,7 +66,7 @@ export const Navbar = () => {
               </span>
             </h1>
             <p className="text-[11px] text-slate-400 font-sans">
-              Commissioning & Calibration Simulator for Junior Engineers
+              Firmware Flashing & Calibration Simulator by Hardik Patel 
             </p>
           </div>
         </div>
@@ -100,46 +108,63 @@ export const Navbar = () => {
             }`}
           >
             {mavlinkConnected ? (
-              <>
-                <PlugZap className="w-3.5 h-3.5" />
-                <span>CONNECTED</span>
-              </>
+              <><PlugZap className="w-3.5 h-3.5" /><span>CONNECTED</span></>
             ) : (
-              <>
-                <Plug className="w-3.5 h-3.5" />
-                <span>CONNECT</span>
-              </>
+              <><Plug className="w-3.5 h-3.5" /><span>CONNECT</span></>
             )}
+          </button>
+
+          <button
+            onClick={handleDevBypass}
+            title="DEV BYPASS: Complete all steps and jump to SITL"
+            className="flex items-center gap-1.5 px-3 py-1.5 bg-orange-600 hover:bg-orange-500 text-white rounded font-bold text-[10px] uppercase shadow-lg shadow-orange-900/50 transition-all border border-orange-400"
+          >
+            <FlaskConical className="w-3.5 h-3.5" />
+            <span>BYPASS</span>
           </button>
 
           <button
             onClick={toggleSound}
             title={soundMuted ? 'Unmute Audio Tones' : 'Mute Audio Tones'}
-            className="p-1.5 text-slate-400 hover:text-cyan-400 hover:bg-slate-900 rounded transition-all"
+            className="p-1.5 text-slate-400 hover:text-cyan-400 hover:bg-slate-900 rounded transition-all ml-1"
           >
             {soundMuted ? <VolumeX className="w-4 h-4 text-red-400" /> : <Volume2 className="w-4 h-4 text-emerald-400" />}
           </button>
         </div>
       </div>
 
-      {/* Main Tab Navigation */}
+      {/* Tab Navigation */}
       <div className="bg-slate-950/90 border-t border-slate-800 px-4">
-        <div className="max-w-7xl mx-auto flex items-center overflow-x-auto scrollbar-none py-1 gap-1">
+        <div className="max-w-7xl mx-auto flex items-center overflow-x-auto py-1 gap-1" style={{ scrollbarWidth: 'none' }}>
           {tabs.map((tab) => {
             const Icon = tab.icon;
             const isActive = activeTab === tab.id;
+            const isLocked = tab.requiresCalib && !allCalibrationsDone;
+
             return (
               <button
                 key={tab.id}
-                onClick={() => setActiveTab(tab.id)}
-                className={`px-3 py-2 rounded-md font-mono text-xs font-medium flex items-center gap-2 transition-all whitespace-nowrap ${
-                  isActive
+                onClick={() => !isLocked && setActiveTab(tab.id)}
+                title={isLocked ? 'Complete all calibrations to unlock 3D SITL Arena' : tab.label}
+                className={`px-3 py-2 rounded-md font-mono text-xs font-medium flex items-center gap-2 transition-all whitespace-nowrap relative ${
+                  isLocked
+                    ? 'text-slate-600 border border-slate-800/50 cursor-not-allowed'
+                    : isActive
                     ? 'bg-purple-900/50 text-purple-200 border border-purple-500/60 shadow-[0_0_12px_rgba(168,85,247,0.25)]'
                     : 'text-slate-400 hover:text-slate-200 hover:bg-slate-900/60 border border-transparent'
                 }`}
               >
-                <Icon className={`w-3.5 h-3.5 ${isActive ? 'text-purple-400' : 'text-slate-500'}`} />
+                {isLocked ? (
+                  <Lock className="w-3.5 h-3.5 text-slate-600" />
+                ) : (
+                  <Icon className={`w-3.5 h-3.5 ${isActive ? 'text-purple-400' : 'text-slate-500'}`} />
+                )}
                 <span>{tab.label}</span>
+                {isLocked && (
+                  <span className="text-[9px] bg-slate-800 text-slate-500 px-1 py-0.5 rounded ml-1">
+                    LOCKED
+                  </span>
+                )}
               </button>
             );
           })}

@@ -4,6 +4,8 @@ class SoundManager {
   constructor() {
     this.ctx = null;
     this.muted = false;
+    this.motorOsc = null;
+    this.motorGain = null;
   }
 
   initContext() {
@@ -20,6 +22,9 @@ class SoundManager {
 
   setMuted(muted) {
     this.muted = muted;
+    if (muted && this.motorGain) {
+      this.motorGain.gain.setValueAtTime(0, this.ctx.currentTime);
+    }
   }
 
   playNote(freq, type = 'sine', duration = 0.15, volume = 0.2, delay = 0) {
@@ -67,6 +72,22 @@ class SoundManager {
     notes.forEach(n => {
       this.playNote(n.freq, 'triangle', n.dur, 0.25, n.time);
     });
+  }
+
+  // Arming Tone (High double-beep)
+  playArmingTone() {
+    if (this.muted) return;
+    this.initContext();
+    this.playNote(1046.50, 'sawtooth', 0.1, 0.3, 0);
+    this.playNote(1567.98, 'sawtooth', 0.2, 0.35, 0.12);
+  }
+
+  // Disarming Tone (Low falling double-beep)
+  playDisarmTone() {
+    if (this.muted) return;
+    this.initContext();
+    this.playNote(1046.50, 'sawtooth', 0.1, 0.3, 0);
+    this.playNote(523.25, 'sawtooth', 0.2, 0.3, 0.12);
   }
 
   // ESC Throttle Calibration Initialization Beeps (3 rising chimes)
@@ -144,6 +165,39 @@ class SoundManager {
         this.playNote(220, 'sawtooth', 0.15, 0.3, i * 0.25);
         this.playNote(880, 'sawtooth', 0.15, 0.35, i * 0.25 + 0.1);
       }
+    } catch (e) {
+      console.error(e);
+    }
+  }
+
+  // Continuous Motor Sound (SITL Flight mode)
+  updateMotorHum(normalizedThrottle, isArmed) {
+    if (this.muted || !isArmed) {
+      if (this.motorGain && this.ctx) {
+        this.motorGain.gain.setValueAtTime(0, this.ctx.currentTime);
+      }
+      return;
+    }
+    this.initContext();
+    if (!this.ctx) return;
+
+    try {
+      if (!this.motorOsc) {
+        this.motorOsc = this.ctx.createOscillator();
+        this.motorGain = this.ctx.createGain();
+        this.motorOsc.type = 'sawtooth';
+        this.motorOsc.frequency.setValueAtTime(100, this.ctx.currentTime);
+        this.motorGain.gain.setValueAtTime(0.02, this.ctx.currentTime);
+        this.motorOsc.connect(this.motorGain);
+        this.motorGain.connect(this.ctx.destination);
+        this.motorOsc.start();
+      }
+
+      const freq = 120 + normalizedThrottle * 280; // 120Hz idle to 400Hz max throttle
+      const vol = 0.03 + normalizedThrottle * 0.12;
+
+      this.motorOsc.frequency.setTargetAtTime(freq, this.ctx.currentTime, 0.1);
+      this.motorGain.gain.setTargetAtTime(vol, this.ctx.currentTime, 0.1);
     } catch (e) {
       console.error(e);
     }

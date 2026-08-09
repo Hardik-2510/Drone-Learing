@@ -7,10 +7,11 @@ import { AccelCalibGame } from './components/tabs/AccelCalibGame';
 import { CompassCalibGame } from './components/tabs/CompassCalibGame';
 import { RadioCalibGame } from './components/tabs/RadioCalibGame';
 import { EscCalibGame } from './components/tabs/EscCalibGame';
-import { QuizArenaTab } from './components/tabs/QuizArenaTab';
+
+import { SitlArenaTab } from './components/tabs/SitlArenaTab';
 import { MavlinkConsole } from './components/common/MavlinkConsole';
 import { SafetyModal } from './components/SafetyModal';
-import { ShieldCheck, Cpu, Compass, Radio, Zap, HelpCircle, Layers } from 'lucide-react';
+
 
 const MainContent = () => {
   const { activeTab } = useSimulator();
@@ -29,8 +30,9 @@ const MainContent = () => {
         return <RadioCalibGame />;
       case 'esc':
         return <EscCalibGame />;
-      case 'quiz':
-        return <QuizArenaTab />;
+
+      case 'sitl':
+        return <SitlArenaTab />;
       default:
         return <VirtualBench />;
     }

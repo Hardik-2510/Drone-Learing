@@ -1,216 +1,387 @@
-import React, { useState, useRef, useEffect } from 'react';
+import React, { useState, useRef, useEffect, useCallback } from 'react';
 import { useSimulator } from '../../context/SimulatorContext';
-import { Compass, CheckCircle2, RotateCw, Sparkles, RefreshCw } from 'lucide-react';
+import { Compass, CheckCircle2, RotateCw, Sparkles, RefreshCw, Play, Square, Zap } from 'lucide-react';
+
+// 120 Fibonacci sphere points — easier to fill to 100%
+function buildSpherePoints() {
+  const pts = [];
+  const N = 120;
+  const phi = Math.PI * (3 - Math.sqrt(5));
+  for (let i = 0; i < N; i++) {
+    const y = 1 - (i / (N - 1)) * 2;
+    const r = Math.sqrt(Math.max(0, 1 - y * y));
+    const theta = phi * i;
+    pts.push({ id: i, nx: Math.cos(theta) * r, ny: y, nz: Math.sin(theta) * r, green: false });
+  }
+  return pts;
+}
+
+const TOTAL_PTS = 120;
 
 export const CompassCalibGame = () => {
   const { compassState, sampleCompassPoints, addLog } = useSimulator();
-  const [rotation, setRotation] = useState({ x: 20, y: 30 });
-  const [isDragging, setIsDragging] = useState(false);
-  const dragStart = useRef({ x: 0, y: 0 });
 
-  // Generate 120 points on a 3D sphere surface using Fibonacci sphere algorithm
-  const [spherePoints, setSpherePoints] = useState(() => {
-    const points = [];
-    const numPoints = 120;
-    const phi = Math.PI * (3 - Math.sqrt(5)); // Golden ratio angle
+  const canvasRef = useRef(null);
+  const rotXRef = useRef(0.4);
+  const rotYRef = useRef(0.3);
+  const dragging = useRef(false);
+  const lastPos = useRef({ x: 0, y: 0 });
+  const autoRef = useRef(false);
+  const rafRef = useRef(null);
+  const completedRef = useRef(false);
 
-    for (let i = 0; i < numPoints; i++) {
-      const y = 1 - (i / (numPoints - 1)) * 2; // y goes from 1 to -1
-      const radius = Math.sqrt(1 - y * y); // radius at y
-      const theta = phi * i; // golden angle increment
+  // Points + green count live in refs for stale-closure-free rAF access
+  const ptsRef = useRef(buildSpherePoints());
+  const greenCountRef = useRef(0);
+  const sentProgressRef = useRef(0); // how many % we've already sent to context
 
-      const x = Math.cos(theta) * radius;
-      const z = Math.sin(theta) * radius;
+  const [autoRotate, setAutoRotate] = useState(false);
+  const [displayGreen, setDisplayGreen] = useState(0);
 
-      points.push({ id: i, x, y, z, green: false });
+  // Sync completed flag from context into ref
+  useEffect(() => {
+    completedRef.current = compassState.completed;
+    if (compassState.completed) {
+      // Mark all points green visually
+      ptsRef.current.forEach((p) => { p.green = true; });
+      greenCountRef.current = TOTAL_PTS;
     }
-    return points;
-  });
+  }, [compassState.completed]);
 
-  const handleMouseDown = (e) => {
-    setIsDragging(true);
-    dragStart.current = { x: e.clientX, y: e.clientY };
+  // ── Reset ──
+  const handleReset = useCallback(() => {
+    ptsRef.current = buildSpherePoints();
+    greenCountRef.current = 0;
+    sentProgressRef.current = 0;
+    setDisplayGreen(0);
+    // Reset context progress by sending a huge negative — but context has no reset,
+    // so just reload the page as workaround (or we can re-use a local-only visual reset)
+  }, []);
+
+  // ── Quick Calibrate ──
+  const handleQuickCalib = useCallback(() => {
+    if (completedRef.current) return;
+    // Mark all green instantly
+    ptsRef.current.forEach((p) => { p.green = true; });
+    greenCountRef.current = TOTAL_PTS;
+    const remaining = 100 - sentProgressRef.current;
+    if (remaining > 0) {
+      sentProgressRef.current = 100;
+      setDisplayGreen(TOTAL_PTS);
+      sampleCompassPoints(remaining);
+    }
+    addLog('INFO', 'Compass: Quick calibration applied. All 120 sphere vectors captured.');
+  }, [sampleCompassPoints, addLog]);
+
+  const toggleAuto = () => {
+    const next = !autoRef.current;
+    autoRef.current = next;
+    setAutoRotate(next);
   };
 
-  const handleMouseMove = (e) => {
-    if (!isDragging || compassState.completed) return;
-    const dx = e.clientX - dragStart.current.x;
-    const dy = e.clientY - dragStart.current.y;
+  // ── Main canvas render loop ──
+  useEffect(() => {
+    const canvas = canvasRef.current;
+    if (!canvas) return;
+    const ctx = canvas.getContext('2d');
 
-    const newX = rotation.x + dy * 0.5;
-    const newY = rotation.y + dx * 0.5;
+    const W = canvas.width;
+    const H = canvas.height;
+    const CX = W / 2;
+    const CY = H / 2;
+    const R = Math.min(CX, CY) - 28;
 
-    setRotation({ x: newX, y: newY });
-    dragStart.current = { x: e.clientX, y: e.clientY };
+    const render = () => {
+      // Auto-orbit: Lissajous pattern — faster to ensure full coverage
+      if (autoRef.current && !completedRef.current) {
+        rotYRef.current += 0.032;
+        rotXRef.current += 0.019;
+      }
 
-    // Turn nearby white points to green based on angle coverage
-    let newlyGreened = 0;
-    setSpherePoints((prev) =>
-      prev.map((pt) => {
-        if (pt.green) return pt;
-        // Project point with rotation
-        const radX = (newX * Math.PI) / 180;
-        const radY = (newY * Math.PI) / 180;
-        const projZ = pt.x * Math.sin(radY) + pt.z * Math.cos(radY);
+      const cx = Math.cos(rotXRef.current), sx = Math.sin(rotXRef.current);
+      const cy = Math.cos(rotYRef.current), sy = Math.sin(rotYRef.current);
 
-        if (projZ > 0.65) {
-          newlyGreened++;
-          return { ...pt, green: true };
+      let newGreen = 0;
+      const projected = ptsRef.current.map((p) => {
+        // Rotate around Y axis then X axis
+        const x1 = p.nx * cy + p.nz * sy;
+        const z1 = -p.nx * sy + p.nz * cy;
+        const y2 = p.ny * cx - z1 * sx;
+        const z2 = p.ny * sx + z1 * cx;
+
+        // ✅ FIXED: threshold lowered to -0.1 so ~57% of sphere turns green per view
+        // Combined with Lissajous orbit, all 120 points get hit quickly
+        if (!p.green && z2 > -0.1) {
+          p.green = true;
         }
-        return pt;
-      })
-    );
+        if (p.green) newGreen++;
 
-    if (newlyGreened > 0) {
-      sampleCompassPoints(newlyGreened * 0.85);
-    }
-  };
+        return { id: p.id, sx: CX + x1 * R, sy: CY + y2 * R, sz: z2, green: p.green };
+      });
 
-  const handleMouseUp = () => {
-    setIsDragging(false);
-  };
+      greenCountRef.current = newGreen;
+
+      // Push progress to context incrementally
+      const pct = Math.min(100, Math.round((newGreen / TOTAL_PTS) * 100));
+      if (pct > sentProgressRef.current && !completedRef.current) {
+        const delta = pct - sentProgressRef.current;
+        sentProgressRef.current = pct;
+        setDisplayGreen(newGreen);
+        sampleCompassPoints(delta);
+      }
+
+      // Clear
+      ctx.clearRect(0, 0, W, H);
+
+      // Sphere wireframe ring
+      ctx.beginPath();
+      ctx.arc(CX, CY, R, 0, Math.PI * 2);
+      ctx.strokeStyle = 'rgba(51,65,85,0.5)';
+      ctx.lineWidth = 1;
+      ctx.setLineDash([3, 6]);
+      ctx.stroke();
+      ctx.setLineDash([]);
+
+      // Latitude / equator ellipse
+      ctx.beginPath();
+      ctx.ellipse(CX, CY, R, Math.abs(R * cx), 0, 0, Math.PI * 2);
+      ctx.strokeStyle = 'rgba(99,102,241,0.2)';
+      ctx.lineWidth = 1;
+      ctx.stroke();
+
+      // Sort back-to-front for correct depth rendering
+      projected.sort((a, b) => a.sz - b.sz);
+
+      // Draw points
+      projected.forEach((p) => {
+        const depth = (p.sz + 1) / 2;
+        const size = p.green ? 3.5 + depth * 2 : 1.8 + depth * 0.8;
+        ctx.beginPath();
+        ctx.arc(p.sx, p.sy, size, 0, Math.PI * 2);
+        if (p.green) {
+          ctx.fillStyle = `rgba(16,185,129,${0.55 + depth * 0.45})`;
+          ctx.shadowColor = '#10b981';
+          ctx.shadowBlur = 7;
+        } else {
+          ctx.fillStyle = `rgba(148,163,184,${0.1 + depth * 0.35})`;
+          ctx.shadowBlur = 0;
+        }
+        ctx.fill();
+      });
+      ctx.shadowBlur = 0;
+
+      // Drone crosshair at center
+      ctx.save();
+      ctx.translate(CX, CY);
+      ctx.strokeStyle = completedRef.current ? '#10b981' : '#38bdf8';
+      ctx.lineWidth = 2.5;
+      ctx.beginPath();
+      ctx.moveTo(-14, -14); ctx.lineTo(14, 14);
+      ctx.moveTo(14, -14); ctx.lineTo(-14, 14);
+      ctx.stroke();
+      ctx.fillStyle = completedRef.current ? '#10b981' : '#a855f7';
+      ctx.beginPath();
+      ctx.arc(0, 0, 7, 0, Math.PI * 2);
+      ctx.fill();
+      ctx.restore();
+
+      // Progress bar at bottom
+      const barW = W - 60;
+      const barX = 30;
+      const barY = H - 22;
+      ctx.fillStyle = '#1e293b';
+      ctx.beginPath();
+      ctx.roundRect(barX, barY, barW, 10, 5);
+      ctx.fill();
+      const fillColor = completedRef.current ? '#10b981' : `hsl(${sentProgressRef.current * 1.2}, 80%, 55%)`;
+      ctx.fillStyle = fillColor;
+      ctx.beginPath();
+      ctx.roundRect(barX, barY, barW * (sentProgressRef.current / 100), 10, 5);
+      ctx.fill();
+      ctx.fillStyle = '#94a3b8';
+      ctx.font = '11px monospace';
+      ctx.textAlign = 'center';
+      ctx.fillText(
+        completedRef.current
+          ? '✓ 100% — COMPASS SPHERE COMPLETE'
+          : `${sentProgressRef.current}% — Drag canvas or click Auto-Orbit`,
+        CX, barY - 6
+      );
+
+      rafRef.current = requestAnimationFrame(render);
+    };
+
+    render();
+    return () => { if (rafRef.current) cancelAnimationFrame(rafRef.current); };
+  }, []); // runs once — all mutable state in refs
+
+  // ── Pointer handlers ──
+  const onMouseDown = useCallback((e) => {
+    dragging.current = true;
+    lastPos.current = { x: e.clientX, y: e.clientY };
+  }, []);
+
+  const onMouseMove = useCallback((e) => {
+    if (!dragging.current) return;
+    const dx = e.clientX - lastPos.current.x;
+    const dy = e.clientY - lastPos.current.y;
+    rotYRef.current += dx * 0.012;
+    rotXRef.current += dy * 0.012;
+    lastPos.current = { x: e.clientX, y: e.clientY };
+  }, []);
+
+  const onMouseUp = useCallback(() => { dragging.current = false; }, []);
+
+  const onTouchStart = useCallback((e) => {
+    dragging.current = true;
+    lastPos.current = { x: e.touches[0].clientX, y: e.touches[0].clientY };
+  }, []);
+
+  const onTouchMove = useCallback((e) => {
+    if (!dragging.current) return;
+    const dx = e.touches[0].clientX - lastPos.current.x;
+    const dy = e.touches[0].clientY - lastPos.current.y;
+    rotYRef.current += dx * 0.012;
+    rotXRef.current += dy * 0.012;
+    lastPos.current = { x: e.touches[0].clientX, y: e.touches[0].clientY };
+  }, []);
+
+  const pct = Math.min(100, Math.round((displayGreen / TOTAL_PTS) * 100));
 
   return (
-    <div className="space-y-6 select-none" onMouseUp={handleMouseUp} onMouseLeave={handleMouseUp}>
+    <div
+      className="space-y-6 select-none"
+      onMouseMove={onMouseMove}
+      onMouseUp={onMouseUp}
+      onMouseLeave={onMouseUp}
+    >
       {/* Header */}
       <div className="gcs-panel p-5 rounded-xl border border-slate-800 flex flex-wrap items-center justify-between gap-4">
         <div>
           <div className="flex items-center gap-2">
             <Compass className="w-5 h-5 text-cyan-400" />
             <h2 className="text-lg font-bold text-slate-100 font-mono tracking-wider">
-              COMPASS 3D SPHERE ROTATION CALIBRATION
+              COMPASS 3D SPHERE POINT CLOUD CALIBRATION
             </h2>
           </div>
           <p className="text-xs text-slate-400 font-sans mt-0.5">
-            Click & drag to rotate the drone in a 360-degree orbit to sample magnetic field points across all axes.
+            Slowly rotate the drone in a figure-8 pattern across all axes to fill the magnetic field sphere.
           </p>
         </div>
-
-        <div className="flex items-center gap-3">
-          <div className="text-right font-mono">
-            <div className="text-[10px] text-slate-400 uppercase">Coverage</div>
-            <div className="text-base font-bold text-cyan-400">{Math.round(compassState.progress)}%</div>
-          </div>
+        <div className="font-mono text-right">
+          <div className="text-[10px] text-slate-400 uppercase">Points Green</div>
+          <div className="text-base font-bold text-emerald-400">{displayGreen} / {TOTAL_PTS}</div>
         </div>
       </div>
 
-      {/* Main 3D Sphere Interactive Canvas */}
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
-        <div
-          onMouseDown={handleMouseDown}
-          onMouseMove={handleMouseMove}
-          className={`lg:col-span-2 gcs-panel p-6 rounded-xl border border-slate-800 bg-slate-950 flex flex-col items-center justify-center min-h-[420px] relative overflow-hidden cursor-grab active:cursor-grabbing ${
-            compassState.completed ? 'border-emerald-500/80 shadow-[0_0_30px_rgba(16,185,129,0.2)]' : ''
-          }`}
-        >
-          {/* Top Instruction */}
-          <div className="absolute top-4 left-4 text-xs font-mono text-cyan-400 flex items-center gap-2">
-            <RotateCw className="w-4 h-4 animate-spin" />
-            {compassState.completed ? (
-              <span className="text-emerald-400 font-bold">COMPASS SPHERE COMPLETE!</span>
-            ) : (
-              <span>DRAG MOUSE TO ORBIT DRONE & TURN WHITE POINTS GREEN</span>
+        {/* Canvas */}
+        <div className="lg:col-span-2 gcs-panel p-4 rounded-xl border border-slate-800 bg-slate-950 flex flex-col items-center justify-center min-h-[380px] relative overflow-hidden">
+          <div className="absolute top-4 left-4 text-xs font-mono flex items-center gap-2 z-10">
+            <RotateCw className={`w-4 h-4 ${autoRotate ? 'animate-spin text-emerald-400' : 'text-cyan-400'}`} />
+            {compassState.completed
+              ? <span className="text-emerald-400 font-bold">✓ SPHERE 100% COMPLETE!</span>
+              : <span className="text-cyan-300">DRAG TO ROTATE DRONE</span>}
+          </div>
+          <canvas
+            ref={canvasRef}
+            width={480}
+            height={360}
+            onMouseDown={onMouseDown}
+            onTouchStart={onTouchStart}
+            onTouchMove={onTouchMove}
+            onTouchEnd={onMouseUp}
+            className="cursor-grab active:cursor-grabbing rounded-xl border border-slate-900 shadow-2xl"
+          />
+        </div>
+
+        {/* Side Panel */}
+        <div className="gcs-panel p-5 rounded-xl border border-slate-800 flex flex-col justify-between font-mono">
+          <div className="space-y-3">
+            <h3 className="text-sm font-bold text-slate-200 uppercase tracking-wider border-b border-slate-800 pb-2">
+              Calibration Controls
+            </h3>
+
+            {/* Auto-Orbit Toggle */}
+            <button
+              onClick={toggleAuto}
+              disabled={compassState.completed}
+              className={`w-full py-3 px-4 rounded-lg font-bold text-xs flex items-center justify-center gap-2 border transition-all ${
+                compassState.completed
+                  ? 'bg-slate-900 border-slate-700 text-slate-500 cursor-not-allowed'
+                  : autoRotate
+                  ? 'bg-emerald-950 border-emerald-500 text-emerald-300 shadow-[0_0_15px_rgba(16,185,129,0.3)]'
+                  : 'bg-slate-900 border-slate-700 text-cyan-300 hover:border-cyan-500'
+              }`}
+            >
+              {autoRotate ? <Square className="w-4 h-4" /> : <Play className="w-4 h-4" />}
+              {autoRotate ? 'STOP AUTO-ORBIT' : 'START 360° AUTO-ORBIT'}
+            </button>
+
+            {/* Quick Calibrate */}
+            <button
+              onClick={handleQuickCalib}
+              disabled={compassState.completed}
+              className={`w-full py-2.5 px-4 rounded-lg font-bold text-xs flex items-center justify-center gap-2 border transition-all ${
+                compassState.completed
+                  ? 'bg-slate-900 border-slate-700 text-slate-500 cursor-not-allowed'
+                  : 'bg-purple-950/60 border-purple-700 text-purple-300 hover:bg-purple-900/60 hover:border-purple-500'
+              }`}
+            >
+              <Zap className="w-4 h-4" />
+              QUICK CALIBRATE (SKIP)
+            </button>
+
+            <div className="p-3 bg-slate-950 rounded-lg border border-slate-800 text-xs text-slate-300 font-sans space-y-1.5">
+              <div className="font-mono font-bold text-purple-300 mb-1">How it works:</div>
+              <div>• White dots = unsampled field vectors</div>
+              <div>• Green dots = magnetic field captured</div>
+              <div>• Rotate in figure-8 for best coverage</div>
+              <div>• Keep away from iron / steel objects</div>
+            </div>
+
+            {/* Progress ring */}
+            <div className="flex items-center justify-center py-2">
+              <div className="relative w-20 h-20">
+                <svg viewBox="0 0 36 36" className="w-20 h-20 -rotate-90">
+                  <circle cx="18" cy="18" r="15.9" fill="none" stroke="#1e293b" strokeWidth="3" />
+                  <circle
+                    cx="18" cy="18" r="15.9" fill="none"
+                    stroke={compassState.completed ? '#10b981' : '#38bdf8'}
+                    strokeWidth="3"
+                    strokeDasharray={`${pct}, 100`}
+                    strokeLinecap="round"
+                    style={{ transition: 'stroke-dasharray 0.3s ease' }}
+                  />
+                </svg>
+                <div className="absolute inset-0 flex flex-col items-center justify-center">
+                  <span className="text-lg font-bold text-slate-100">{pct}%</span>
+                  <span className="text-[9px] text-slate-500 uppercase">filled</span>
+                </div>
+              </div>
+            </div>
+
+            {compassState.completed && (
+              <div className="p-3 bg-emerald-950/70 border-2 border-emerald-500 rounded-xl text-emerald-300 text-xs space-y-1">
+                <div className="flex items-center gap-2 font-bold">
+                  <CheckCircle2 className="w-4 h-4" />
+                  COMPASS_OFS saved to EEPROM!
+                </div>
+              </div>
             )}
           </div>
 
-          {/* 3D Sphere Points Scatter Graphic */}
-          <div
-            className="w-72 h-72 relative flex items-center justify-center transition-transform duration-75"
-            style={{
-              transformStyle: 'preserve-3d',
-              transform: `perspective(600px) rotateX(${rotation.x}deg) rotateY(${rotation.y}deg)`,
-            }}
-          >
-            {/* Center Drone Model */}
-            <div className="w-24 h-24 bg-slate-900 border-2 border-cyan-400 rounded-xl flex items-center justify-center shadow-2xl z-10">
-              <Compass className={`w-10 h-10 ${compassState.completed ? 'text-emerald-400 animate-spin' : 'text-cyan-400'}`} />
-            </div>
-
-            {/* Render 120 scatter points on 3D sphere surface */}
-            {spherePoints.map((pt) => {
-              const radius = 130;
-              const px = pt.x * radius;
-              const py = pt.y * radius;
-              const pz = pt.z * radius;
-
-              return (
-                <div
-                  key={pt.id}
-                  className={`absolute w-3 h-3 rounded-full transition-all duration-300 shadow-md ${
-                    pt.green
-                      ? 'bg-emerald-400 shadow-[0_0_8px_#10b981] scale-125'
-                      : 'bg-slate-500/60 border border-slate-400/40'
-                  }`}
-                  style={{
-                    transform: `translate3d(${px}px, ${py}px, ${pz}px)`,
-                  }}
-                />
-              );
-            })}
-          </div>
-
-          {/* Progress Bar */}
-          <div className="w-full max-w-md mt-6 px-4">
-            <div className="flex justify-between text-xs font-mono mb-1 text-slate-300">
-              <span>Points Sampled: {spherePoints.filter((p) => p.green).length} / 120</span>
-              <span className="font-bold text-cyan-400">{Math.round(compassState.progress)}%</span>
-            </div>
-            <div className="w-full bg-slate-900 h-3 rounded-full overflow-hidden border border-slate-800 p-0.5">
-              <div
-                className="bg-gradient-to-r from-cyan-500 to-emerald-400 h-full rounded-full transition-all duration-200"
-                style={{ width: `${compassState.progress}%` }}
-              />
-            </div>
-          </div>
-        </div>
-
-        {/* Side Panel Guidance & Autopilot Reboot Banner */}
-        <div className="gcs-panel p-5 rounded-xl border border-slate-800 flex flex-col justify-between font-mono">
-          <div>
-            <h3 className="text-sm font-bold text-slate-200 uppercase tracking-wider mb-4 border-b border-slate-800 pb-2">
-              Compass Calibration Rules
-            </h3>
-
-            <div className="space-y-3 text-xs text-slate-300 font-sans">
-              <div className="p-3 bg-slate-900 rounded-lg border border-slate-800">
-                <div className="font-mono font-bold text-cyan-300 mb-1">1. Full 360° Sphere Orbit</div>
-                <p>Rotate the drone along pitch, roll, and yaw axes to cover all white scatter nodes.</p>
-              </div>
-
-              <div className="p-3 bg-slate-900 rounded-lg border border-slate-800">
-                <div className="font-mono font-bold text-cyan-300 mb-1">2. Environmental Interference</div>
-                <p>Ensure calibration is performed outdoors away from reinforced concrete (rebar) & magnetic metals.</p>
-              </div>
-
-              {compassState.completed && (
-                <div className="p-4 bg-emerald-950/60 border border-emerald-500 rounded-xl text-emerald-300 font-mono text-xs space-y-2 animate-bounce">
-                  <div className="flex items-center gap-2 font-bold text-sm">
-                    <Sparkles className="w-5 h-5 text-emerald-400" />
-                    CALIBRATION SUCCESSFUL!
-                  </div>
-                  <p className="font-sans text-slate-200">
-                    Magnetic offsets computed & saved. <span className="font-bold text-emerald-300">Reboot Autopilot</span> to apply new COMPASS_OFS parameters.
-                  </p>
-                </div>
-              )}
-            </div>
-          </div>
-
           <button
-            onClick={() => {
-              if (compassState.completed) {
-                addLog('SUCCESS', 'Autopilot Rebooted. Compass parameters active.');
-              }
-            }}
+            onClick={() => compassState.completed && addLog('SUCCESS', 'Autopilot Rebooted. New COMPASS_OFS parameters active.')}
             disabled={!compassState.completed}
-            className={`w-full py-3 rounded-lg font-bold text-xs flex items-center justify-center gap-2 transition-all font-mono ${
+            className={`w-full py-3 mt-4 rounded-lg font-bold text-xs flex items-center justify-center gap-2 transition-all ${
               compassState.completed
                 ? 'bg-emerald-600 hover:bg-emerald-500 text-white shadow-lg shadow-emerald-950/50'
                 : 'bg-slate-800 text-slate-500 cursor-not-allowed'
             }`}
           >
             <RefreshCw className={`w-4 h-4 ${compassState.completed ? 'animate-spin' : ''}`} />
-            {compassState.completed ? 'REBOOT AUTOPILOT NOW' : 'WAITING FOR 100% SPHERE...'}
+            {compassState.completed ? 'REBOOT AUTOPILOT NOW' : `FILL SPHERE TO COMPLETE (${pct}%)`}
           </button>
         </div>
       </div>
