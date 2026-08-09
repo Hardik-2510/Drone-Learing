@@ -13,8 +13,7 @@ import {
   Activity,
   Layers,
   Navigation,
-  Lock,
-  FlaskConical
+  Lock
 } from 'lucide-react';
 
 export const Navbar = () => {
@@ -30,14 +29,7 @@ export const Navbar = () => {
     soundMuted,
     toggleSound,
     allCalibrationsDone,
-    bypassAllCalibrations,
   } = useSimulator();
-
-  const handleDevBypass = () => {
-    bypassAllCalibrations();
-    // Auto-navigate to SITL after a short delay (so confetti plays first)
-    setTimeout(() => setActiveTab('sitl'), 400);
-  };
 
   const tabs = [
     { id: 'bench', label: '1. Virtual Bench', icon: Wrench },
@@ -112,15 +104,6 @@ export const Navbar = () => {
             ) : (
               <><Plug className="w-3.5 h-3.5" /><span>CONNECT</span></>
             )}
-          </button>
-
-          <button
-            onClick={handleDevBypass}
-            title="DEV BYPASS: Complete all steps and jump to SITL"
-            className="flex items-center gap-1.5 px-3 py-1.5 bg-orange-600 hover:bg-orange-500 text-white rounded font-bold text-[10px] uppercase shadow-lg shadow-orange-900/50 transition-all border border-orange-400"
-          >
-            <FlaskConical className="w-3.5 h-3.5" />
-            <span>BYPASS</span>
           </button>
 
           <button

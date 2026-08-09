@@ -48,6 +48,12 @@ class SoundManager {
 
         osc.start();
         osc.stop(this.ctx.currentTime + duration);
+
+        // Memory leak fix: disconnect after playing
+        osc.onended = () => {
+          osc.disconnect();
+          gain.disconnect();
+        };
       } catch (e) {
         console.error('Audio play error:', e);
       }
@@ -159,6 +165,14 @@ class SoundManager {
       noiseGain.connect(this.ctx.destination);
 
       whiteNoise.start();
+      whiteNoise.stop(this.ctx.currentTime + 1.0); // Stop after 1s
+      
+      // Memory leak fix: disconnect after playing
+      whiteNoise.onended = () => {
+        whiteNoise.disconnect();
+        noiseFilter.disconnect();
+        noiseGain.disconnect();
+      };
 
       // Pulsing siren
       for (let i = 0; i < 3; i++) {

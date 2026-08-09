@@ -1,4 +1,4 @@
-import React, { createContext, useContext, useState, useMemo } from 'react';
+import React, { createContext, useContext, useState, useMemo, useEffect } from 'react';
 import { soundFx } from '../audio/audioSynthesizer';
 import confetti from 'canvas-confetti';
 
@@ -320,7 +320,6 @@ export const SimulatorProvider = ({ children }) => {
     addLog('SUCCESS', 'ESC Throttle Calibration Complete! Endpoints stored across all ESCs.');
   };
 
-  // ✅ DEV BYPASS — instantly complete every step for testing
   const bypassAllCalibrations = () => {
     setFirmwareInstalled(true);
     setFlashStage('COMPLETE');
@@ -344,7 +343,30 @@ export const SimulatorProvider = ({ children }) => {
     setTimeout(() => soundFx.playSuccessTone(), 250);
     confetti({ particleCount: 150, spread: 100, origin: { y: 0.4 } });
     addLog('SUCCESS', '🚀 DEV BYPASS: All calibration steps completed. SITL Arena unlocked!');
+    setTimeout(() => setActiveTab('sitl'), 400);
   };
+
+  // ✅ SECRET DEV CHEAT — Expose to console
+  useEffect(() => {
+    // Allows typing `window["Hackyboy is Active"]` in console
+    Object.defineProperty(window, 'Hackyboy is Active', {
+      get: () => {
+        bypassAllCalibrations();
+        return "🔥 HACKYBOY IS ACTIVE: All calibrations bypassed! Launching SITL...";
+      },
+      configurable: true
+    });
+
+    // Also just a simple function they can call: Hackyboy()
+    window.Hackyboy = () => {
+      bypassAllCalibrations();
+      return "🔥 HACKYBOY IS ACTIVE: All calibrations bypassed! Launching SITL...";
+    };
+
+    console.log("%c🤫 Pssst... Dev Mode:", "color: #a855f7; font-weight: bold; font-size: 14px;");
+    console.log("%cType %cHackyboy()%c in this console (or %cwindow['Hackyboy is Active']%c) and press Enter to instantly bypass all calibrations!", "color: #94a3b8", "color: #10b981; font-family: monospace; font-size: 14px;", "color: #94a3b8", "color: #10b981; font-family: monospace; font-size: 14px;", "color: #94a3b8");
+  }, [/* run once on mount */]);
+
 
   return (
     <SimulatorContext.Provider

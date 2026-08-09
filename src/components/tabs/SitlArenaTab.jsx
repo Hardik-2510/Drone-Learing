@@ -246,7 +246,7 @@ function buildScene() {
 const CONTROL_KEYS = new Set(['ArrowUp', 'ArrowDown', 'ArrowLeft', 'ArrowRight', ' ']);
 
 export const SitlArenaTab = () => {
-  const { addLog } = useSimulator();
+  const { addLog, allCalibrationsDone, triggerSafetyViolation } = useSimulator();
   const mountRef = useRef(null);
   const isFocusedRef = useRef(false); // true when 3D viewport is focused
 
@@ -445,6 +445,31 @@ export const SitlArenaTab = () => {
     return () => {
       cancelAnimationFrame(rafRef.current);
       window.removeEventListener('resize', onResize);
+      
+      // ✅ Explicitly dispose geometries, materials, and textures to prevent WebGL memory leaks
+      scene.traverse((object) => {
+        if (object.isMesh) {
+          if (object.geometry) object.geometry.dispose();
+          if (object.material) {
+            if (Array.isArray(object.material)) {
+              object.material.forEach(mat => disposeMaterial(mat));
+            } else {
+              disposeMaterial(object.material);
+            }
+          }
+        }
+      });
+      
+      function disposeMaterial(mat) {
+        mat.dispose();
+        if (mat.map) mat.map.dispose();
+        if (mat.lightMap) mat.lightMap.dispose();
+        if (mat.bumpMap) mat.bumpMap.dispose();
+        if (mat.normalMap) mat.normalMap.dispose();
+        if (mat.specularMap) mat.specularMap.dispose();
+        if (mat.envMap) mat.envMap.dispose();
+      }
+
       renderer.dispose();
       if (container.contains(renderer.domElement)) container.removeChild(renderer.domElement);
     };
@@ -454,15 +479,11 @@ export const SitlArenaTab = () => {
   useEffect(() => {
     const down = (e) => {
       keysRef.current[e.key] = true;
-      // ✅ Always prevent arrow keys + space from scrolling the page
       if (CONTROL_KEYS.has(e.key)) {
         e.preventDefault();
       }
     };
-    const up = (e) => {
-      keysRef.current[e.key] = false;
-    };
-    // Attach to window so keys work globally when SITL tab is visible
+    const up = (e) => { keysRef.current[e.key] = false; };
     window.addEventListener('keydown', down, { passive: false });
     window.addEventListener('keyup', up);
     return () => {
@@ -470,6 +491,25 @@ export const SitlArenaTab = () => {
       window.removeEventListener('keyup', up);
     };
   }, []);
+
+  // ✅ SAFETY INTERLOCK: Bypassing UI restrictions to force tab open
+  useEffect(() => {
+    if (!allCalibrationsDone) {
+      triggerSafetyViolation('UNAUTHORIZED ACCESS: FLIGHT ATTEMPTED BEFORE MANDATORY CALIBRATIONS COMPLETED');
+    }
+  }, [allCalibrationsDone, triggerSafetyViolation]);
+
+  if (!allCalibrationsDone) {
+    return (
+      <div className="flex flex-col items-center justify-center h-[600px] bg-slate-950/80 rounded-xl border-2 border-red-600/50 shadow-[0_0_50px_rgba(220,38,38,0.2)]">
+        <div className="text-red-500 font-bold text-3xl mb-4 text-center">🚨 FATAL SAFETY INTERLOCK 🚨</div>
+        <div className="text-slate-300 font-mono text-center max-w-lg mb-6">
+          System detected an unauthorized attempt to enter the Flight Controller SITL Arena while hardware calibrations are incomplete. This violates basic aviation safety principles.
+        </div>
+        <div className="text-slate-500 text-sm">Please return to the Virtual Bench and complete all mandatory steps.</div>
+      </div>
+    );
+  }
 
   const toggleArm = useCallback(() => {
     if (isArmedRef.current) {
