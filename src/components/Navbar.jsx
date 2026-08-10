@@ -1,5 +1,6 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { useSimulator } from '../context/SimulatorContext';
+import { DocsModal } from './DocsModal';
 import {
   Plug,
   PlugZap,
@@ -13,10 +14,14 @@ import {
   Activity,
   Layers,
   Navigation,
-  Lock
+  Lock,
+  BookOpen,
+  Code,
+  ExternalLink
 } from 'lucide-react';
 
 export const Navbar = () => {
+  const [showDocsModal, setShowDocsModal] = useState(false);
   const {
     comPort,
     setComPort,
@@ -42,29 +47,54 @@ export const Navbar = () => {
   ];
 
   return (
-    <header className="gcs-header sticky top-0 z-40 border-b border-slate-800 shadow-2xl">
-      {/* Top GCS Bar */}
-      <div className="max-w-7xl mx-auto px-4 py-2.5 flex flex-wrap items-center justify-between gap-4">
-        {/* Logo & Title */}
-        <div className="flex items-center gap-3">
-          <div className="p-2 bg-purple-950/60 border border-purple-500/40 rounded-lg shadow-[0_0_15px_rgba(168,85,247,0.3)]">
-            <Layers className="w-5 h-5 text-purple-400 animate-pulse" />
+    <>
+      <header className="gcs-header sticky top-0 z-40 border-b border-slate-800 shadow-2xl">
+        {/* Top GCS Bar */}
+        <div className="max-w-7xl mx-auto px-4 py-2.5 flex flex-wrap items-center justify-between gap-4">
+          {/* Logo & Title */}
+          <div className="flex items-center gap-3">
+            <div className="p-2 bg-purple-950/60 border border-purple-500/40 rounded-lg shadow-[0_0_15px_rgba(168,85,247,0.3)]">
+              <Layers className="w-5 h-5 text-purple-400 animate-pulse" />
+            </div>
+            <div>
+              <h1 className="text-base font-bold text-slate-100 font-mono tracking-wide flex items-center gap-2">
+                Mission Planner GCS
+                <span className="px-2 py-0.5 text-[10px] bg-purple-900/60 text-purple-300 border border-purple-700/50 rounded-full font-mono">
+                  Radiolink Crossflight V2
+                </span>
+              </h1>
+              <p className="text-[11px] text-slate-400 font-sans">
+                Firmware Flashing & Calibration Simulator by Hardik Patel 
+              </p>
+            </div>
           </div>
-          <div>
-            <h1 className="text-base font-bold text-slate-100 font-mono tracking-wide flex items-center gap-2">
-              Mission Planner GCS
-              <span className="px-2 py-0.5 text-[10px] bg-purple-900/60 text-purple-300 border border-purple-700/50 rounded-full font-mono">
-                Radiolink Crossflight V2
-              </span>
-            </h1>
-            <p className="text-[11px] text-slate-400 font-sans">
-              Firmware Flashing & Calibration Simulator by Hardik Patel 
-            </p>
-          </div>
-        </div>
 
-        {/* MAVLink Connection Controls */}
-        <div className="flex items-center gap-3 bg-slate-950/80 p-1.5 rounded-lg border border-slate-800">
+          {/* Docs & Source Quick Action Buttons */}
+          <div className="flex items-center gap-2 bg-slate-950/80 p-1.5 rounded-lg border border-slate-800">
+            <button
+              onClick={() => setShowDocsModal(true)}
+              title="Open Commissioning Documentation & User Guide"
+              className="px-3 py-1 rounded-md bg-purple-950/70 hover:bg-purple-900/90 border border-purple-500/40 hover:border-purple-400 text-purple-200 text-xs font-mono font-semibold flex items-center gap-1.5 transition-all shadow-[0_0_10px_rgba(168,85,247,0.2)] cursor-pointer"
+            >
+              <BookOpen className="w-3.5 h-3.5 text-purple-400" />
+              <span>Docs</span>
+            </button>
+
+            <a
+              href="https://github.com/Hardik-2510/Drone-Learing"
+              target="_blank"
+              rel="noopener noreferrer"
+              title="Open GitHub Source Repository"
+              className="px-3 py-1 rounded-md bg-slate-900 hover:bg-slate-850 border border-slate-700 hover:border-cyan-500/50 text-cyan-300 hover:text-cyan-200 text-xs font-mono font-semibold flex items-center gap-1.5 transition-all cursor-pointer"
+            >
+              <Code className="w-3.5 h-3.5 text-cyan-400" />
+              <span>Source</span>
+              <ExternalLink className="w-3 h-3 text-slate-400" />
+            </a>
+          </div>
+
+          {/* MAVLink Connection Controls */}
+          <div className="flex items-center gap-3 bg-slate-950/80 p-1.5 rounded-lg border border-slate-800">
           <div className="flex items-center gap-2">
             <label className="text-[10px] font-mono text-slate-400 uppercase">Port:</label>
             <select
@@ -154,5 +184,8 @@ export const Navbar = () => {
         </div>
       </div>
     </header>
+
+    <DocsModal isOpen={showDocsModal} onClose={() => setShowDocsModal(false)} />
+    </>
   );
 };
