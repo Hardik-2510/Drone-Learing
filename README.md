@@ -35,20 +35,6 @@ The simulator reproduces the **Virtual Bench**, **Firmware Flash Wizard**, **Acc
 
 ---
 
-## 📸 Screenshots (Placeholders)
-
-> 📷 _Screenshots are generated as placeholders – replace with actual images when available._
-
-![Virtual Bench](https://via.placeholder.com/800x450?text=Virtual+Bench+Screen)
-![Firmware Flash Wizard](https://via.placeholder.com/800x450?text=Firmware+Flash+Wizard)
-![Accelerometer Calibration](https://via.placeholder.com/800x450?text=Accelerometer+Calibration)
-![Compass Calibration](https://via.placeholder.com/800x450?text=Compass+Calibration)
-![RC Transmitter](https://via.placeholder.com/800x450?text=RC+Transmitter)
-![ESC Calibration](https://via.placeholder.com/800x450?text=ESC+Calibration)
-![3D SITL Arena](https://via.placeholder.com/800x450?text=3D+SITL+Arena)
-
----
-
 ## 📖 Detailed Step‑by‑Step User Guide
 
 The following workflow must be followed in order.  Each stage unlocks the next.

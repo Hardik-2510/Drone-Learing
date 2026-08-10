@@ -240,7 +240,7 @@ export const DocsModal = ({ isOpen, onClose }) => {
           </div>
           <div className="flex items-center gap-3">
             <a
-              href="https://github.com/Hardik-2510/Drone-Learing/blob/main/README.md"
+              href="https://github.com/Hardik-2510/Drone-Learing"
               target="_blank"
               rel="noopener noreferrer"
               className="px-4 py-2 bg-slate-900 hover:bg-slate-800 border border-purple-500/40 hover:border-purple-400 text-purple-300 text-xs font-mono font-bold rounded-xl flex items-center gap-2 transition-all shadow-sm cursor-pointer"
