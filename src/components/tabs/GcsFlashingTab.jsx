@@ -38,14 +38,14 @@ export const GcsFlashingTab = () => {
   ];
 
   return (
-    <div className="space-y-6">
+    <div className="space-y-4 sm:space-y-6">
       {/* Header */}
-      <div className="gcs-panel p-5 rounded-xl border border-slate-800 flex flex-wrap items-center justify-between gap-4">
+      <div className="gcs-panel p-4 sm:p-5 rounded-xl border border-slate-800 flex flex-wrap items-center justify-between gap-3 sm:gap-4">
         <div>
           <div className="flex items-center gap-2">
             <Cpu className="w-5 h-5 text-cyan-400" />
-            <h2 className="text-lg font-bold text-slate-100 font-mono tracking-wider">
-              MISSION PLANNER - FIRMWARE INSTALLATION
+            <h2 className="text-base sm:text-lg font-bold text-slate-100 font-mono tracking-wider">
+              <span className="hidden sm:inline">MISSION PLANNER - </span>FIRMWARE INSTALLATION
             </h2>
           </div>
           <p className="text-xs text-slate-400 font-sans mt-0.5">
@@ -60,14 +60,15 @@ export const GcsFlashingTab = () => {
               mavlinkConnected ? 'bg-emerald-950 text-emerald-300 border border-emerald-500' : 'bg-slate-900 text-slate-400 border border-slate-700'
             }`}
           >
-            {mavlinkConnected ? 'CONNECTED (DISCONNECT REQUIRED TO FLASH)' : 'DISCONNECTED (READY)'}
+            <span className="sm:hidden">{mavlinkConnected ? 'CONNECTED (DISCONNECT TO FLASH)' : 'DISCONNECTED (READY)'}</span>
+            <span className="hidden sm:inline">{mavlinkConnected ? 'CONNECTED (DISCONNECT REQUIRED TO FLASH)' : 'DISCONNECTED (READY)'}</span>
           </span>
         </div>
       </div>
 
       {/* Active Connection Lock Warning Modal */}
       {flashStage === 'WARN_CONNECTED' && (
-        <div className="p-4 bg-amber-950/60 border-2 border-amber-500 rounded-xl flex items-center justify-between gap-4 animate-shake font-mono">
+        <div className="p-3 sm:p-4 bg-amber-950/60 border-2 border-amber-500 rounded-xl flex flex-wrap sm:flex-nowrap items-center justify-between gap-3 sm:gap-4 animate-shake font-mono">
           <div className="flex items-center gap-3">
             <ShieldAlert className="w-6 h-6 text-amber-400 shrink-0" />
             <div>
@@ -82,7 +83,7 @@ export const GcsFlashingTab = () => {
               toggleMavlinkConnect();
               setFlashStage('IDLE');
             }}
-            className="px-4 py-2 bg-amber-500 hover:bg-amber-400 text-slate-950 font-bold text-xs rounded-lg shrink-0 shadow-md"
+            className="px-4 py-2 bg-amber-500 hover:bg-amber-400 text-slate-950 font-bold text-xs rounded-lg shrink-0 shadow-md w-full sm:w-auto"
           >
             DISCONNECT MAVLINK NOW
           </button>
@@ -195,7 +196,7 @@ export const GcsFlashingTab = () => {
           <h3 className="text-sm font-bold font-mono text-slate-300 uppercase tracking-wider mb-4">
             Select Target Vehicle Firmware Icon:
           </h3>
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3 sm:gap-4">
             {vehicles.map((v) => {
               const isQuad = v.id === 'quad';
               return (

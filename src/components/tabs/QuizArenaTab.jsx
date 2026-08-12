@@ -183,14 +183,14 @@ export const QuizArenaTab = () => {
   };
 
   return (
-    <div className="space-y-6">
+    <div className="space-y-4 sm:space-y-6">
       {/* Header */}
-      <div className="gcs-panel p-5 rounded-xl border border-slate-800 flex flex-wrap items-center justify-between gap-4">
+      <div className="gcs-panel p-4 sm:p-5 rounded-xl border border-slate-800 flex flex-wrap items-center justify-between gap-3 sm:gap-4">
         <div>
           <div className="flex items-center gap-2">
             <HelpCircle className="w-5 h-5 text-purple-400" />
-            <h2 className="text-lg font-bold text-slate-100 font-mono tracking-wider">
-              TROUBLESHOOTING QUIZ ARENA (PRE-ARM FAULTS)
+            <h2 className="text-base sm:text-lg font-bold text-slate-100 font-mono tracking-wider">
+              <span className="hidden sm:inline">TROUBLESHOOTING </span>QUIZ ARENA<span className="hidden sm:inline"> (PRE-ARM FAULTS)</span>
             </h2>
           </div>
           <p className="text-xs text-slate-400 font-sans mt-0.5">
@@ -208,7 +208,7 @@ export const QuizArenaTab = () => {
       </div>
 
       {/* Main Question Card */}
-      <div className="gcs-panel p-6 rounded-xl border border-slate-800 bg-slate-950/90 font-mono max-w-3xl mx-auto shadow-2xl">
+      <div className="gcs-panel p-4 sm:p-6 rounded-xl border border-slate-800 bg-slate-950/90 font-mono max-w-3xl mx-auto shadow-2xl">
         <div className="flex items-center justify-between border-b border-slate-800 pb-3 mb-5">
           <span className="text-xs text-purple-400 font-bold">
             QUESTION {currentIdx + 1} OF {quizQuestions.length}
@@ -276,7 +276,7 @@ export const QuizArenaTab = () => {
         </div>
 
         {/* Footer Next Button */}
-        <div className="flex justify-between items-center pt-4 border-t border-slate-800">
+        <div className="flex flex-wrap sm:flex-nowrap justify-between items-center gap-3 pt-4 border-t border-slate-800">
           <button
             onClick={handleRestart}
             className="px-4 py-2 bg-slate-800 hover:bg-slate-700 text-slate-300 text-xs rounded-lg flex items-center gap-1.5"

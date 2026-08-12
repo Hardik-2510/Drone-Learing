@@ -32,22 +32,22 @@ export const DocsModal = ({ isOpen, onClose }) => {
 
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/80 backdrop-blur-md animate-fade-in">
-      <div className="max-w-4xl w-full max-h-[85vh] bg-slate-950 border border-slate-800 rounded-2xl shadow-[0_0_50px_rgba(168,85,247,0.25)] flex flex-col overflow-hidden font-sans">
+      <div className="max-w-4xl w-full max-h-[90vh] sm:max-h-[85vh] bg-slate-950 border border-slate-800 rounded-2xl shadow-[0_0_50px_rgba(168,85,247,0.25)] flex flex-col overflow-hidden font-sans">
         {/* Header */}
-        <div className="p-5 border-b border-slate-800 flex items-center justify-between bg-slate-900/60">
-          <div className="flex items-center gap-3">
-            <div className="p-2 bg-purple-950/80 border border-purple-500/40 rounded-xl shadow-[0_0_15px_rgba(168,85,247,0.3)]">
-              <BookOpen className="w-6 h-6 text-purple-400" />
+        <div className="p-3 sm:p-5 border-b border-slate-800 flex items-center justify-between bg-slate-900/60">
+          <div className="flex items-center gap-2 sm:gap-3 min-w-0">
+            <div className="p-1.5 sm:p-2 bg-purple-950/80 border border-purple-500/40 rounded-xl shadow-[0_0_15px_rgba(168,85,247,0.3)] shrink-0">
+              <BookOpen className="w-5 h-5 sm:w-6 sm:h-6 text-purple-400" />
             </div>
-            <div>
-              <h2 className="text-lg font-bold text-slate-100 font-mono tracking-wide flex items-center gap-2">
-                MISSION PLANNER SIMULATOR DOCUMENTATION
-                <span className="px-2 py-0.5 text-[10px] bg-purple-900/60 text-purple-300 border border-purple-700/50 rounded-full font-mono">
+            <div className="min-w-0">
+              <h2 className="text-sm sm:text-lg font-bold text-slate-100 font-mono tracking-wide flex items-center gap-2 flex-wrap">
+                <span className="hidden sm:inline">MISSION PLANNER SIMULATOR </span>DOCUMENTATION
+                <span className="hidden sm:inline px-2 py-0.5 text-[10px] bg-purple-900/60 text-purple-300 border border-purple-700/50 rounded-full font-mono">
                   v2.4 User Guide
                 </span>
               </h2>
-              <p className="text-xs text-slate-400">
-                End-to-End Drone Commissioning & Radiolink Crossflight V2 Autopilot Setup
+              <p className="text-xs text-slate-400 hidden sm:block">
+                End-to-End Drone Commissioning &amp; Radiolink Crossflight V2 Autopilot Setup
               </p>
             </div>
           </div>
@@ -61,7 +61,7 @@ export const DocsModal = ({ isOpen, onClose }) => {
         </div>
 
         {/* Tab Navigation */}
-        <div className="border-b border-slate-800 bg-slate-900/30 px-5 flex items-center gap-2 overflow-x-auto py-2">
+        <div className="border-b border-slate-800 bg-slate-900/30 px-3 sm:px-5 flex items-center gap-1 sm:gap-2 overflow-x-auto py-2 scrollbar-none">
           {docTabs.map((tab) => {
             const Icon = tab.icon;
             const isActive = activeDocTab === tab.id;
@@ -83,7 +83,7 @@ export const DocsModal = ({ isOpen, onClose }) => {
         </div>
 
         {/* Scrollable Content Body */}
-        <div className="p-6 overflow-y-auto space-y-6 text-slate-300 text-sm leading-relaxed flex-1 font-sans">
+        <div className="p-4 sm:p-6 overflow-y-auto space-y-4 sm:space-y-6 text-slate-300 text-sm leading-relaxed flex-1 font-sans">
           {activeDocTab === 'overview' && (
             <div className="space-y-4">
               <div className="flex flex-wrap items-center justify-between gap-4 p-4 bg-purple-950/40 border border-purple-500/40 rounded-xl">
@@ -234,7 +234,7 @@ export const DocsModal = ({ isOpen, onClose }) => {
         </div>
 
         {/* Footer */}
-        <div className="p-4 border-t border-slate-800 bg-slate-900/80 flex flex-wrap items-center justify-between gap-3">
+        <div className="p-3 sm:p-4 border-t border-slate-800 bg-slate-900/80 flex flex-wrap items-center justify-between gap-3">
           <div className="text-xs text-slate-500 font-mono">
             Radiolink Crossflight V2 • ArduPilot Commissioning Guide
           </div>
@@ -251,9 +251,9 @@ export const DocsModal = ({ isOpen, onClose }) => {
             </a>
             <button
               onClick={onClose}
-              className="px-4 py-2 bg-purple-600 hover:bg-purple-500 text-white font-mono font-bold text-xs rounded-xl shadow-lg transition-all cursor-pointer"
+              className="px-4 py-2 bg-purple-600 hover:bg-purple-500 text-white font-mono font-bold text-xs rounded-xl shadow-lg transition-all cursor-pointer w-full sm:w-auto text-center"
             >
-              Close Documentation
+              Close
             </button>
           </div>
         </div>

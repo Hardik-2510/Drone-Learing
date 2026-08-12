@@ -250,18 +250,18 @@ export const CompassCalibGame = () => {
 
   return (
     <div
-      className="space-y-6 select-none"
+      className="space-y-4 sm:space-y-6 select-none"
       onMouseMove={onMouseMove}
       onMouseUp={onMouseUp}
       onMouseLeave={onMouseUp}
     >
       {/* Header */}
-      <div className="gcs-panel p-5 rounded-xl border border-slate-800 flex flex-wrap items-center justify-between gap-4">
+      <div className="gcs-panel p-4 sm:p-5 rounded-xl border border-slate-800 flex flex-wrap items-center justify-between gap-3 sm:gap-4">
         <div>
           <div className="flex items-center gap-2">
             <Compass className="w-5 h-5 text-cyan-400" />
-            <h2 className="text-lg font-bold text-slate-100 font-mono tracking-wider">
-              COMPASS 3D SPHERE POINT CLOUD CALIBRATION
+            <h2 className="text-base sm:text-lg font-bold text-slate-100 font-mono tracking-wider">
+              <span className="hidden sm:inline">COMPASS 3D SPHERE POINT CLOUD </span>CALIBRATION
             </h2>
           </div>
           <p className="text-xs text-slate-400 font-sans mt-0.5">
@@ -274,9 +274,9 @@ export const CompassCalibGame = () => {
         </div>
       </div>
 
-      <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+      <div className="grid grid-cols-1 lg:grid-cols-3 gap-4 sm:gap-6">
         {/* Canvas */}
-        <div className="lg:col-span-2 gcs-panel p-4 rounded-xl border border-slate-800 bg-slate-950 flex flex-col items-center justify-center min-h-[380px] relative overflow-hidden">
+        <div className="lg:col-span-2 gcs-panel p-3 sm:p-4 rounded-xl border border-slate-800 bg-slate-950 flex flex-col items-center justify-center min-h-[300px] sm:min-h-[380px] relative overflow-hidden">
           <div className="absolute top-4 left-4 text-xs font-mono flex items-center gap-2 z-10">
             <RotateCw className={`w-4 h-4 ${autoRotate ? 'animate-spin text-emerald-400' : 'text-cyan-400'}`} />
             {compassState.completed
@@ -291,7 +291,8 @@ export const CompassCalibGame = () => {
             onTouchStart={onTouchStart}
             onTouchMove={onTouchMove}
             onTouchEnd={onMouseUp}
-            className="cursor-grab active:cursor-grabbing rounded-xl border border-slate-900 shadow-2xl"
+            className="cursor-grab active:cursor-grabbing rounded-xl border border-slate-900 shadow-2xl max-w-full"
+            style={{ maxWidth: '100%', height: 'auto' }}
           />
         </div>
 

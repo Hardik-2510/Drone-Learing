@@ -44,7 +44,7 @@ const MainContent = () => {
       <Navbar />
 
       {/* Main Workspace Area */}
-      <main className="max-w-7xl w-full mx-auto px-4 py-6 flex-1 space-y-6">
+      <main className="max-w-7xl w-full mx-auto px-3 sm:px-4 py-4 sm:py-6 flex-1 space-y-4 sm:space-y-6">
         {renderTabContent()}
 
         {/* Global MAVLink Telemetry Console */}
@@ -55,13 +55,14 @@ const MainContent = () => {
       <SafetyModal />
 
       {/* Footer */}
-      <footer className="gcs-header py-4 border-t border-slate-800/80 text-center font-mono text-xs text-slate-500">
-        <div className="max-w-7xl mx-auto px-4 flex flex-wrap items-center justify-between gap-2">
+      <footer className="gcs-header py-3 sm:py-4 border-t border-slate-800/80 text-center font-mono text-xs text-slate-500">
+        <div className="max-w-7xl mx-auto px-3 sm:px-4 flex flex-wrap items-center justify-between gap-2">
           <div className="flex items-center gap-2">
             <span className="w-2 h-2 rounded-full bg-emerald-400 animate-pulse" />
-            <span>ArduPilot Commissioning Simulator v2.4 • Mission Planner Interactive GCS</span>
+            <span className="hidden sm:inline">ArduPilot Commissioning Simulator v2.4 • Mission Planner Interactive GCS</span>
+            <span className="sm:hidden">ArduPilot GCS Simulator v2.4</span>
           </div>
-          <div>Target Hardware: Radiolink Crossflight V2 Autopilot</div>
+          <div className="hidden sm:block">Target Hardware: Radiolink Crossflight V2 Autopilot</div>
         </div>
       </footer>
     </div>

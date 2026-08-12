@@ -74,14 +74,14 @@ export const RadioCalibGame = () => {
   ];
 
   return (
-    <div className="space-y-6 select-none">
+    <div className="space-y-4 sm:space-y-6 select-none">
       {/* Header */}
-      <div className="gcs-panel p-5 rounded-xl border border-slate-800 flex flex-wrap items-center justify-between gap-4">
+      <div className="gcs-panel p-4 sm:p-5 rounded-xl border border-slate-800 flex flex-wrap items-center justify-between gap-3 sm:gap-4">
         <div>
           <div className="flex items-center gap-2">
             <Radio className="w-5 h-5 text-purple-400" />
-            <h2 className="text-lg font-bold text-slate-100 font-mono tracking-wider">
-              RADIO CONTROL (RC) TRANSMITTER CALIBRATION
+            <h2 className="text-base sm:text-lg font-bold text-slate-100 font-mono tracking-wider">
+              <span className="hidden sm:inline">RADIO CONTROL (RC) TRANSMITTER </span>CALIBRATION
             </h2>
           </div>
           <p className="text-xs text-slate-400 font-sans mt-0.5">
@@ -105,7 +105,7 @@ export const RadioCalibGame = () => {
 
       {/* Pitch Channel Reversal Check Warning */}
       {radioState.reverseError && (
-        <div className="p-4 bg-amber-950/70 border-2 border-amber-500 rounded-xl flex items-center justify-between gap-4 font-mono text-xs text-amber-300 animate-pulse">
+        <div className="p-3 sm:p-4 bg-amber-950/70 border-2 border-amber-500 rounded-xl flex flex-wrap sm:flex-nowrap items-center justify-between gap-3 sm:gap-4 font-mono text-xs text-amber-300 animate-pulse">
           <div className="flex items-center gap-3">
             <AlertTriangle className="w-6 h-6 text-amber-400 shrink-0" />
             <div>
@@ -117,30 +117,31 @@ export const RadioCalibGame = () => {
           </div>
           <button
             onClick={togglePitchReversal}
-            className="px-4 py-2 bg-amber-500 hover:bg-amber-400 text-slate-950 font-bold rounded-lg shrink-0"
+            className="px-4 py-2 bg-amber-500 hover:bg-amber-400 text-slate-950 font-bold rounded-lg shrink-0 w-full sm:w-auto"
           >
             TOGGLE REVERSE CH2
           </button>
         </div>
       )}
 
-      <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+      <div className="grid grid-cols-1 lg:grid-cols-2 gap-4 sm:gap-6">
         {/* Virtual RC Transmitter Graphic (Left Column) */}
-        <div className="gcs-panel p-6 rounded-xl border border-slate-800 bg-slate-950 flex flex-col items-center justify-center min-h-[380px] relative">
+        <div className="gcs-panel p-4 sm:p-6 rounded-xl border border-slate-800 bg-slate-950 flex flex-col items-center justify-center min-h-[300px] sm:min-h-[380px] relative">
           <div className="text-xs font-mono font-bold text-purple-400 mb-4 flex items-center gap-2">
             <Radio className="w-4 h-4" />
             VIRTUAL RC TRANSMITTER (MODE 2)
           </div>
 
-          {/* Dual Joystick Box */}
-          <div className="flex items-center justify-around w-full gap-6">
+          {/* Dual Joystick Box — stacked on mobile, side-by-side on sm+ */}
+          <div className="flex flex-col sm:flex-row items-center justify-around w-full gap-6">
             {/* Left Joystick: Throttle / Yaw */}
             <div className="flex flex-col items-center">
               <div
                 ref={leftStickRef}
                 onMouseDown={(e) => handlePointerDown(e, 'left')}
                 onTouchStart={(e) => handlePointerDown(e, 'left')}
-                className="w-40 h-40 bg-slate-900 border-2 border-slate-700 rounded-2xl relative flex items-center justify-center cursor-crosshair shadow-inner"
+                className="w-40 h-40 sm:w-40 sm:h-40 bg-slate-900 border-2 border-slate-700 rounded-2xl relative flex items-center justify-center cursor-crosshair shadow-inner"
+                style={{ width: 'min(160px, 42vw)', height: 'min(160px, 42vw)' }}
               >
                 {/* Crosshair guide lines */}
                 <div className="absolute w-full h-[1px] bg-slate-800" />
@@ -167,7 +168,8 @@ export const RadioCalibGame = () => {
                 ref={rightStickRef}
                 onMouseDown={(e) => handlePointerDown(e, 'right')}
                 onTouchStart={(e) => handlePointerDown(e, 'right')}
-                className="w-40 h-40 bg-slate-900 border-2 border-slate-700 rounded-2xl relative flex items-center justify-center cursor-crosshair shadow-inner"
+                className="bg-slate-900 border-2 border-slate-700 rounded-2xl relative flex items-center justify-center cursor-crosshair shadow-inner"
+                style={{ width: 'min(160px, 42vw)', height: 'min(160px, 42vw)' }}
               >
                 {/* Crosshair guide lines */}
                 <div className="absolute w-full h-[1px] bg-slate-800" />

@@ -272,7 +272,7 @@ export const SitlArenaTab = () => {
   const [droneLat, setDroneLat] = useState(UTU_LAT);
   const [droneLng, setDroneLng] = useState(UTU_LNG);
   const [trail, setTrail] = useState([[UTU_LAT, UTU_LNG]]);
-  const [activeView, setActiveView] = useState('split'); // '3d' | 'map' | 'split'
+  const [activeView, setActiveView] = useState('3d'); // '3d' | 'map' | 'split' — default 3d so mobile gets full view
 
   // Three.js refs
   const rendererRef = useRef(null);
@@ -538,32 +538,35 @@ export const SitlArenaTab = () => {
   };
 
   return (
-    <div className="space-y-4 font-mono select-none">
+    <div className="space-y-3 sm:space-y-4 font-mono select-none">
       {/* Header bar */}
       <div className="gcs-panel p-4 rounded-xl border border-slate-800 flex flex-wrap items-center justify-between gap-3">
         <div>
           <div className="flex items-center gap-2 flex-wrap">
             <Layers className="w-5 h-5 text-purple-400" />
-            <h2 className="text-base font-bold text-slate-100 tracking-wider">
-              3D SITL FLIGHT ARENA — UTU BARDOLI CAMPUS
+            <h2 className="text-sm sm:text-base font-bold text-slate-100 tracking-wider">
+              <span className="hidden sm:inline">3D SITL FLIGHT ARENA — </span>UTU BARDOLI CAMPUS
             </h2>
-            <span className="px-2 py-0.5 text-[10px] bg-emerald-900/60 text-emerald-300 border border-emerald-700/50 rounded-full">
+            <span className="px-2 py-0.5 text-[10px] bg-emerald-900/60 text-emerald-300 border border-emerald-700/50 rounded-full hidden sm:inline">
               Three.js + Leaflet
             </span>
           </div>
-          <p className="text-xs text-slate-400 font-sans mt-0.5">
+          <p className="text-xs text-slate-400 font-sans mt-0.5 hidden sm:block">
             ↑↓ Throttle&nbsp;·&nbsp;←→ Yaw&nbsp;·&nbsp;W/S Pitch&nbsp;·&nbsp;A/D Roll — Arrow keys won't scroll the page
+          </p>
+          <p className="text-xs text-slate-400 font-sans mt-0.5 sm:hidden">
+            Use on-screen D-pad below to fly
           </p>
         </div>
 
         <div className="flex items-center gap-2 flex-wrap">
-          {/* View toggle */}
+          {/* View toggle — hide 'SPLIT' on mobile since viewports would be too narrow */}
           <div className="flex bg-slate-900 border border-slate-700 rounded-lg overflow-hidden text-[10px] font-bold">
             {['3d', 'split', 'map'].map((v) => (
               <button
                 key={v}
                 onClick={() => setActiveView(v)}
-                className={`px-2.5 py-1.5 transition-all ${activeView === v ? 'bg-purple-700 text-white' : 'text-slate-400 hover:text-slate-200'}`}
+                className={`px-2.5 py-1.5 transition-all ${activeView === v ? 'bg-purple-700 text-white' : 'text-slate-400 hover:text-slate-200'} ${v === 'split' ? 'hidden sm:block' : ''}`}
               >
                 {v === '3d' ? '3D ONLY' : v === 'split' ? 'SPLIT' : 'MAP'}
               </button>
@@ -600,10 +603,11 @@ export const SitlArenaTab = () => {
         </div>
       </div>
 
-      {/* Main viewport area */}
-      <div className={`grid gap-4 ${activeView === 'split' ? 'grid-cols-2' : 'grid-cols-1'}`}
-           style={{ height: activeView === 'split' ? 480 : 520 }}>
-
+      {/* Main viewport area — adaptive height */}
+      <div
+        className={`grid gap-3 sm:gap-4 ${activeView === 'split' ? 'grid-cols-2' : 'grid-cols-1'}`}
+        style={{ height: activeView === 'split' ? 'clamp(300px, 50vw, 480px)' : 'clamp(300px, 55vw, 520px)' }}
+      >
         {/* ── 3D Viewport ── */}
         {(activeView === '3d' || activeView === 'split') && (
           <div className="relative rounded-xl overflow-hidden border border-slate-800 shadow-2xl bg-slate-950">
@@ -679,18 +683,18 @@ export const SitlArenaTab = () => {
         {/* ── Leaflet Map ── */}
         {(activeView === 'map' || activeView === 'split') && (
           <div className="relative rounded-xl overflow-hidden border border-slate-800 shadow-2xl" style={{ zIndex: 0 }}>
-            {/* Map label */}
-            <div className="absolute top-2 left-2 z-[999] bg-slate-950/90 border border-slate-700 rounded-lg px-2.5 py-1.5 text-[10px] font-mono flex items-center gap-1.5">
-              <Map className="w-3.5 h-3.5 text-emerald-400" />
-              <span className="text-emerald-300 font-bold">LIVE GPS MAP</span>
-              <span className="text-slate-500">— UTU Maliba Campus (21.0686°N, 73.1329°E)</span>
-            </div>
-
             {/* Lat/Lng readout */}
             <div className="absolute bottom-2 left-2 z-[999] bg-slate-950/90 border border-slate-700 rounded-lg px-2.5 py-1 text-[10px] font-mono space-y-0.5">
               <div className="text-cyan-300">Lat: {droneLat.toFixed(5)}° N</div>
               <div className="text-purple-300">Lng: {droneLng.toFixed(5)}° E</div>
               <div className="text-amber-300">Alt: {hud.alt} m AGL</div>
+            </div>
+
+            {/* Map label */}
+            <div className="absolute top-2 left-2 z-[999] bg-slate-950/90 border border-slate-700 rounded-lg px-2.5 py-1.5 text-[10px] font-mono flex items-center gap-1.5">
+              <Map className="w-3.5 h-3.5 text-emerald-400" />
+              <span className="text-emerald-300 font-bold">LIVE GPS MAP</span>
+              <span className="text-slate-500 hidden sm:inline">&mdash; UTU Maliba Campus (21.0686°N, 73.1329°E)</span>
             </div>
 
             <MapContainer
@@ -710,8 +714,8 @@ export const SitlArenaTab = () => {
         )}
       </div>
 
-      {/* Quick controls guide */}
-      <div className="gcs-panel p-3 rounded-xl border border-slate-800">
+      {/* Quick controls guide — keyboard (desktop only) */}
+      <div className="gcs-panel p-3 rounded-xl border border-slate-800 hidden sm:block">
         <div className="flex flex-wrap gap-4 items-center justify-center text-[10px] font-mono">
           {[
             ['↑', 'Throttle Up'],
@@ -730,6 +734,97 @@ export const SitlArenaTab = () => {
               <span className="text-slate-500">{label}</span>
             </div>
           ))}
+        </div>
+      </div>
+
+      {/* On-screen D-pad — mobile only (sm:hidden) */}
+      <div className="sm:hidden gcs-panel p-4 rounded-xl border border-slate-800">
+        <div className="text-[10px] font-mono text-slate-400 uppercase tracking-wider text-center mb-3">
+          On-Screen Flight Controls
+        </div>
+        <div className="flex items-start justify-around gap-3">
+
+          {/* Left side — Throttle (up/down) + Yaw (left/right) */}
+          <div className="flex flex-col items-center gap-1">
+            <div className="text-[9px] font-mono text-slate-500 uppercase mb-1">Throttle / Yaw</div>
+            {/* Up (throttle) */}
+            <button
+              onTouchStart={() => { keysRef.current['ArrowUp'] = true; }}
+              onTouchEnd={() => { keysRef.current['ArrowUp'] = false; }}
+              onMouseDown={() => { keysRef.current['ArrowUp'] = true; }}
+              onMouseUp={() => { keysRef.current['ArrowUp'] = false; }}
+              className="w-14 h-10 bg-slate-800 hover:bg-purple-900 active:bg-purple-700 border border-slate-700 rounded-lg font-bold text-slate-200 text-lg flex items-center justify-center select-none"
+            >↑</button>
+            <div className="flex gap-1">
+              {/* Left (yaw) */}
+              <button
+                onTouchStart={() => { keysRef.current['ArrowLeft'] = true; }}
+                onTouchEnd={() => { keysRef.current['ArrowLeft'] = false; }}
+                onMouseDown={() => { keysRef.current['ArrowLeft'] = true; }}
+                onMouseUp={() => { keysRef.current['ArrowLeft'] = false; }}
+                className="w-14 h-10 bg-slate-800 hover:bg-purple-900 active:bg-purple-700 border border-slate-700 rounded-lg font-bold text-slate-200 text-lg flex items-center justify-center select-none"
+              >←</button>
+              {/* Right (yaw) */}
+              <button
+                onTouchStart={() => { keysRef.current['ArrowRight'] = true; }}
+                onTouchEnd={() => { keysRef.current['ArrowRight'] = false; }}
+                onMouseDown={() => { keysRef.current['ArrowRight'] = true; }}
+                onMouseUp={() => { keysRef.current['ArrowRight'] = false; }}
+                className="w-14 h-10 bg-slate-800 hover:bg-purple-900 active:bg-purple-700 border border-slate-700 rounded-lg font-bold text-slate-200 text-lg flex items-center justify-center select-none"
+              >→</button>
+            </div>
+            {/* Down (throttle) */}
+            <button
+              onTouchStart={() => { keysRef.current['ArrowDown'] = true; }}
+              onTouchEnd={() => { keysRef.current['ArrowDown'] = false; }}
+              onMouseDown={() => { keysRef.current['ArrowDown'] = true; }}
+              onMouseUp={() => { keysRef.current['ArrowDown'] = false; }}
+              className="w-14 h-10 bg-slate-800 hover:bg-purple-900 active:bg-purple-700 border border-slate-700 rounded-lg font-bold text-slate-200 text-lg flex items-center justify-center select-none"
+            >↓</button>
+          </div>
+
+          {/* Right side — Pitch (W/S) + Roll (A/D) */}
+          <div className="flex flex-col items-center gap-1">
+            <div className="text-[9px] font-mono text-slate-500 uppercase mb-1">Pitch / Roll</div>
+            {/* W (pitch forward) */}
+            <button
+              onTouchStart={() => { keysRef.current['w'] = true; }}
+              onTouchEnd={() => { keysRef.current['w'] = false; }}
+              onMouseDown={() => { keysRef.current['w'] = true; }}
+              onMouseUp={() => { keysRef.current['w'] = false; }}
+              className="w-14 h-10 bg-slate-800 hover:bg-cyan-900 active:bg-cyan-700 border border-slate-700 rounded-lg font-bold text-cyan-300 text-sm flex items-center justify-center select-none"
+            >W</button>
+            <div className="flex gap-1">
+              {/* A (roll left) */}
+              <button
+                onTouchStart={() => { keysRef.current['a'] = true; }}
+                onTouchEnd={() => { keysRef.current['a'] = false; }}
+                onMouseDown={() => { keysRef.current['a'] = true; }}
+                onMouseUp={() => { keysRef.current['a'] = false; }}
+                className="w-14 h-10 bg-slate-800 hover:bg-cyan-900 active:bg-cyan-700 border border-slate-700 rounded-lg font-bold text-cyan-300 text-sm flex items-center justify-center select-none"
+              >A</button>
+              {/* D (roll right) */}
+              <button
+                onTouchStart={() => { keysRef.current['d'] = true; }}
+                onTouchEnd={() => { keysRef.current['d'] = false; }}
+                onMouseDown={() => { keysRef.current['d'] = true; }}
+                onMouseUp={() => { keysRef.current['d'] = false; }}
+                className="w-14 h-10 bg-slate-800 hover:bg-cyan-900 active:bg-cyan-700 border border-slate-700 rounded-lg font-bold text-cyan-300 text-sm flex items-center justify-center select-none"
+              >D</button>
+            </div>
+            {/* S (pitch back) */}
+            <button
+              onTouchStart={() => { keysRef.current['s'] = true; }}
+              onTouchEnd={() => { keysRef.current['s'] = false; }}
+              onMouseDown={() => { keysRef.current['s'] = true; }}
+              onMouseUp={() => { keysRef.current['s'] = false; }}
+              className="w-14 h-10 bg-slate-800 hover:bg-cyan-900 active:bg-cyan-700 border border-slate-700 rounded-lg font-bold text-cyan-300 text-sm flex items-center justify-center select-none"
+            >S</button>
+          </div>
+        </div>
+
+        <div className="text-center mt-3 text-[10px] font-mono text-slate-600">
+          Left pad: ↑↓ Throttle · ←→ Yaw &nbsp;|&nbsp; Right pad: W/S Pitch · A/D Roll
         </div>
       </div>
     </div>

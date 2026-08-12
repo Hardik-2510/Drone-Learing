@@ -34,9 +34,19 @@ export const AccelCalibGame = () => {
       }
       lastMousePos.current = { x: e.clientX, y: e.clientY };
     };
+    // Touch movement also counts as jitter
+    const handleTouchMove = () => {
+      if (!isSampling) return;
+      jitterDetected.current = true;
+      setMouseJitter(true);
+    };
 
     window.addEventListener('mousemove', handleMouseMove);
-    return () => window.removeEventListener('mousemove', handleMouseMove);
+    window.addEventListener('touchmove', handleTouchMove, { passive: true });
+    return () => {
+      window.removeEventListener('mousemove', handleMouseMove);
+      window.removeEventListener('touchmove', handleTouchMove);
+    };
   }, [isSampling]);
 
   // Handle Sampling timer (2 seconds = 20 ticks of 100ms)
@@ -74,14 +84,14 @@ export const AccelCalibGame = () => {
   }, [accelState.currentStepIndex]);
 
   return (
-    <div className="space-y-6">
+    <div className="space-y-4 sm:space-y-6">
       {/* Header */}
-      <div className="gcs-panel p-5 rounded-xl border border-slate-800 flex flex-wrap items-center justify-between gap-4">
+      <div className="gcs-panel p-4 sm:p-5 rounded-xl border border-slate-800 flex flex-wrap items-center justify-between gap-3 sm:gap-4">
         <div>
           <div className="flex items-center gap-2">
             <Activity className="w-5 h-5 text-emerald-400" />
-            <h2 className="text-lg font-bold text-slate-100 font-mono tracking-wider">
-              3-AXIS ACCELEROMETER 6-POSITION CALIBRATION
+            <h2 className="text-base sm:text-lg font-bold text-slate-100 font-mono tracking-wider">
+              <span className="hidden sm:inline">3-AXIS ACCELEROMETER </span>6-POSITION CALIBRATION
             </h2>
           </div>
           <p className="text-xs text-slate-400 font-sans mt-0.5">
@@ -105,18 +115,20 @@ export const AccelCalibGame = () => {
         </div>
       </div>
 
-      <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+      <div className="grid grid-cols-1 lg:grid-cols-3 gap-4 sm:gap-6">
         {/* 3D Drone Orientation Canvas (2 Cols) */}
-        <div className="lg:col-span-2 gcs-panel p-6 rounded-xl border border-slate-800 bg-slate-950 flex flex-col items-center justify-center min-h-[380px] relative overflow-hidden">
+        <div className="lg:col-span-2 gcs-panel p-4 sm:p-6 rounded-xl border border-slate-800 bg-slate-950 flex flex-col items-center justify-center min-h-[300px] sm:min-h-[380px] relative overflow-hidden">
           <div className="absolute top-4 left-4 text-xs font-mono text-cyan-400 flex items-center gap-2">
             <span className="w-2 h-2 rounded-full bg-cyan-400 animate-ping" />
             Position {accelState.currentStepIndex + 1}: <span className="font-bold text-slate-100">{currentTarget?.name}</span>
           </div>
 
-          {/* 3D Visual Model Box */}
+          {/* 3D Visual Model Box — scales with screen */}
           <div
-            className="w-56 h-56 relative transition-transform duration-700 ease-out flex items-center justify-center"
+            className="relative transition-transform duration-700 ease-out flex items-center justify-center"
             style={{
+              width: 'min(224px, 80vw)',
+              height: 'min(224px, 80vw)',
               transformStyle: 'preserve-3d',
               transform: `perspective(800px) rotateX(${rotation.pitch}deg) rotateY(${rotation.yaw}deg) rotateZ(${rotation.roll}deg)`,
             }}

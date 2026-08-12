@@ -24,14 +24,14 @@ export const EscCalibGame = () => {
   ];
 
   return (
-    <div className="space-y-6">
+    <div className="space-y-4 sm:space-y-6">
       {/* Header */}
-      <div className="gcs-panel p-5 rounded-xl border border-slate-800 flex flex-wrap items-center justify-between gap-4">
+      <div className="gcs-panel p-4 sm:p-5 rounded-xl border border-slate-800 flex flex-wrap items-center justify-between gap-3 sm:gap-4">
         <div>
           <div className="flex items-center gap-2">
             <Zap className="w-5 h-5 text-amber-400" />
-            <h2 className="text-lg font-bold text-slate-100 font-mono tracking-wider">
-              ALL-AT-ONCE ESC THROTTLE CALIBRATION
+            <h2 className="text-base sm:text-lg font-bold text-slate-100 font-mono tracking-wider">
+              <span className="hidden sm:inline">ALL-AT-ONCE </span>ESC THROTTLE CALIBRATION
             </h2>
           </div>
           <p className="text-xs text-slate-400 font-sans mt-0.5">
@@ -58,7 +58,7 @@ export const EscCalibGame = () => {
       )}
 
       {/* Interactive Step Machine */}
-      <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+      <div className="grid grid-cols-1 lg:grid-cols-3 gap-4 sm:gap-6">
         {/* Step-by-Step Card Flow (2 Cols) */}
         <div className="lg:col-span-2 space-y-3 font-mono">
           {stepsList.map((st) => {
@@ -99,11 +99,11 @@ export const EscCalibGame = () => {
 
                 {/* Step Action Buttons */}
                 {isCurrent && (
-                  <div className="mt-4 pt-3 border-t border-amber-500/30 flex justify-end">
+                  <div className="mt-4 pt-3 border-t border-amber-500/30 flex flex-wrap justify-end gap-2">
                     {st.num === 1 && (
                       <button
                         onClick={setEscThrottleMax}
-                        className="px-5 py-2 bg-amber-500 hover:bg-amber-400 text-slate-950 font-bold text-xs rounded-lg shadow-lg"
+                        className="px-4 sm:px-5 py-2 bg-amber-500 hover:bg-amber-400 text-slate-950 font-bold text-xs rounded-lg shadow-lg w-full sm:w-auto"
                       >
                         Set Throttle to MAX (1900us) →
                       </button>
@@ -111,7 +111,7 @@ export const EscCalibGame = () => {
                     {(st.num === 2 || st.num === 3) && (
                       <button
                         onClick={toggleLipo}
-                        className="px-5 py-2 bg-amber-500 hover:bg-amber-400 text-slate-950 font-bold text-xs rounded-lg shadow-lg flex items-center gap-2"
+                        className="px-4 sm:px-5 py-2 bg-amber-500 hover:bg-amber-400 text-slate-950 font-bold text-xs rounded-lg shadow-lg flex items-center gap-2 w-full sm:w-auto justify-center"
                       >
                         <Battery className="w-4 h-4" />
                         {lipoConnected ? 'Unplug LiPo Battery' : 'Plug LiPo Battery'}
@@ -120,7 +120,7 @@ export const EscCalibGame = () => {
                     {st.num === 4 && (
                       <button
                         onClick={toggleSafetySwitch}
-                        className="px-5 py-2 bg-red-600 hover:bg-red-500 text-white font-bold text-xs rounded-lg shadow-lg flex items-center gap-2"
+                        className="px-4 sm:px-5 py-2 bg-red-600 hover:bg-red-500 text-white font-bold text-xs rounded-lg shadow-lg flex items-center gap-2 w-full sm:w-auto justify-center"
                       >
                         <Power className="w-4 h-4" />
                         Press FC Safety Switch (Solid Red)
@@ -129,7 +129,7 @@ export const EscCalibGame = () => {
                     {st.num === 5 && (
                       <button
                         onClick={setEscThrottleMin}
-                        className="px-5 py-2 bg-emerald-600 hover:bg-emerald-500 text-white font-bold text-xs rounded-lg shadow-lg flex items-center gap-2"
+                        className="px-4 sm:px-5 py-2 bg-emerald-600 hover:bg-emerald-500 text-white font-bold text-xs rounded-lg shadow-lg flex items-center gap-2 w-full sm:w-auto justify-center"
                       >
                         <ArrowDown className="w-4 h-4" />
                         Pull Throttle to MINIMUM (1100us)
