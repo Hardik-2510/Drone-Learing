@@ -1,14 +1,9 @@
-import React, { useRef, useEffect } from 'react';
+import React from 'react';
 import { useSimulator } from '../../context/SimulatorContext';
 import { Terminal, ShieldAlert, CheckCircle2, Info, AlertTriangle } from 'lucide-react';
 
 export const MavlinkConsole = () => {
   const { logs } = useSimulator();
-  const bottomRef = useRef(null);
-
-  useEffect(() => {
-    bottomRef.current?.scrollIntoView({ behavior: 'smooth' });
-  }, [logs]);
 
   const getIcon = (level) => {
     switch (level) {
@@ -60,7 +55,6 @@ export const MavlinkConsole = () => {
             <span className="leading-relaxed break-all min-w-0">{log.text}</span>
           </div>
         ))}
-        <div ref={bottomRef} />
       </div>
     </div>
   );
