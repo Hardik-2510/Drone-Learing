@@ -34,28 +34,29 @@ export const MavlinkConsole = () => {
         return 'text-emerald-300 bg-emerald-950/20 border-l-2 border-emerald-500';
       case 'INFO':
       default:
-        return 'text-slate-300 border-l-2 border-slate-700';
+        return 'border-l-2 border-slate-600';
     }
   };
 
   return (
-    <div className="gcs-panel rounded-lg overflow-hidden border border-slate-800 shadow-xl font-mono text-xs">
-      <div className="gcs-header px-4 py-2 flex items-center justify-between border-b border-slate-800 text-slate-300">
+    <div className="gcs-panel rounded-lg overflow-hidden border shadow-xl font-mono text-xs" style={{ borderColor: 'var(--border)' }}>
+      <div className="gcs-header px-4 py-2 flex items-center justify-between border-b" style={{ borderColor: 'var(--border)', color: 'var(--text-secondary)' }}>
         <div className="flex items-center gap-2">
           <Terminal className="w-4 h-4 text-cyan-400" />
           <span className="font-semibold text-cyan-300 tracking-wider">MAVLink<span className="hidden sm:inline"> Telemetry &amp; Log</span> Console</span>
         </div>
-        <div className="flex items-center gap-2 text-[10px] text-slate-400">
+        <div className="flex items-center gap-2 text-[10px]" style={{ color: 'var(--text-muted)' }}>
           <span className="w-2 h-2 rounded-full bg-emerald-500 animate-pulse"></span>
           <span className="hidden sm:inline">915MHz Telemetry Active</span>
           <span className="sm:hidden">LIVE</span>
         </div>
       </div>
-      <div className="p-3 max-h-36 overflow-y-auto space-y-1.5 bg-slate-950/80">
+      <div className="p-3 max-h-36 overflow-y-auto space-y-1.5" style={{ backgroundColor: 'var(--bg-surface)' }}>
         {logs.map((log) => (
-          <div key={log.id} className={`px-2.5 py-1 rounded flex items-start gap-2 ${getTextColor(log.level)}`}>
+          <div key={log.id} className={`px-2.5 py-1 rounded flex items-start gap-2 ${getTextColor(log.level)}`}
+            style={log.level === 'INFO' ? { color: 'var(--text-secondary)' } : {}}>
             {getIcon(log.level)}
-            <span className="text-[10px] text-slate-500 shrink-0">{log.time}</span>
+            <span className="text-[10px] shrink-0" style={{ color: 'var(--text-subtle)' }}>{log.time}</span>
             <span className="leading-relaxed break-all min-w-0">{log.text}</span>
           </div>
         ))}

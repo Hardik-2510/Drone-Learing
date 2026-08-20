@@ -102,7 +102,7 @@ export const VirtualBench = () => {
       {/* Main Bench Visual Representation & Control Grid */}
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-4 sm:gap-6">
         {/* Visual Workbench Graphic (2 Columns) */}
-        <div className="lg:col-span-2 gcs-panel p-4 sm:p-6 rounded-xl border border-slate-800 relative bg-slate-950/90 flex flex-col items-center justify-center min-h-[380px] sm:min-h-[420px]">
+        <div className="lg:col-span-2 gcs-panel p-4 sm:p-6 rounded-xl border relative flex flex-col items-center justify-center min-h-[380px] sm:min-h-[420px]" style={{ borderColor: 'var(--border)', backgroundColor: 'var(--bg-surface)' }}>
           {/* Subtle grid pattern background */}
           <div className="absolute inset-0 opacity-10 bg-[radial-gradient(#38bdf8_1px,transparent_1px)] [background-size:16px_16px]" />
 
@@ -111,10 +111,10 @@ export const VirtualBench = () => {
 
             {/* Top Row: Laptop & USB Cable */}
             <div className="w-full flex flex-col sm:flex-row items-center justify-between gap-3 sm:gap-0 px-2 sm:px-6">
-              <div className="flex items-center gap-3 bg-slate-900/90 p-2.5 sm:p-3 rounded-xl border border-slate-800 shadow-md">
+              <div className="flex items-center gap-3 p-2.5 sm:p-3 rounded-xl border shadow-md" style={{ backgroundColor: 'var(--bg-elevated)', borderColor: 'var(--border)' }}>
                 <Laptop className="w-7 h-7 sm:w-8 sm:h-8 text-cyan-400" />
                 <div>
-                  <div className="text-xs font-mono font-bold text-slate-200">GCS Laptop Station</div>
+                  <div className="text-xs font-mono font-bold" style={{ color: 'var(--text-secondary)' }}>GCS Laptop Station</div>
                   <div className="text-[10px] font-mono text-cyan-400">Mission Planner v1.3.81</div>
                 </div>
               </div>
@@ -129,7 +129,7 @@ export const VirtualBench = () => {
                   }`}
                   style={{ minHeight: '2rem', minWidth: '6px' }}
                 >
-                  <span className="sm:absolute sm:-top-5 sm:left-1/2 sm:-translate-x-1/2 text-[10px] font-mono text-slate-400 sm:whitespace-nowrap px-1 sm:px-0 text-center sm:text-left">
+                  <span className="sm:absolute sm:-top-5 sm:left-1/2 sm:-translate-x-1/2 text-[10px] font-mono sm:whitespace-nowrap px-1 sm:px-0 text-center sm:text-left" style={{ color: 'var(--text-muted)' }}>
                     {usbConnected ? 'USB 5V Power & MAVLink Data' : 'USB Disconnected'}
                   </span>
                 </div>
@@ -138,10 +138,11 @@ export const VirtualBench = () => {
               <button
                 onClick={toggleUsb}
                 className={`px-3 sm:px-4 py-2 rounded-lg font-mono text-xs font-bold flex items-center gap-2 border transition-all w-full sm:w-auto justify-center ${
-                  usbConnected
-                    ? 'bg-cyan-950/80 border-cyan-500/80 text-cyan-300 shadow-[0_0_15px_rgba(6,182,212,0.3)]'
-                    : 'bg-slate-900 border-slate-700 text-slate-400 hover:text-slate-200'
-                }`}
+                    usbConnected
+                      ? 'bg-cyan-950/80 border-cyan-500/80 text-cyan-300 shadow-[0_0_15px_rgba(6,182,212,0.3)]'
+                      : 'border'
+                  }`}
+                  style={!usbConnected ? { backgroundColor: 'var(--bg-elevated)', borderColor: 'var(--border)', color: 'var(--text-muted)' } : {}}
               >
                 <Usb className="w-4 h-4" />
                 <span className="sm:hidden">{usbConnected ? 'UNPLUG USB' : 'PLUG USB'}</span>
@@ -154,8 +155,8 @@ export const VirtualBench = () => {
               {/* Drone Frame Graphic — scales with container */}
               <div className="absolute inset-0 flex items-center justify-center">
                 {/* Diagonal Arms */}
-                <div className="absolute bg-slate-800 rounded-full rotate-45 border border-slate-700" style={{ width: '90%', height: '10px' }} />
-                <div className="absolute bg-slate-800 rounded-full -rotate-45 border border-slate-700" style={{ width: '90%', height: '10px' }} />
+                <div className="absolute bg-slate-700/70 rounded-full rotate-45 border border-slate-600/50" style={{ width: '90%', height: '10px' }} />
+                <div className="absolute bg-slate-700/70 rounded-full -rotate-45 border border-slate-600/50" style={{ width: '90%', height: '10px' }} />
 
                 {/* Motors at 4 Corners */}
                 {/* Motor 1: Top Right */}
@@ -256,10 +257,10 @@ export const VirtualBench = () => {
 
             {/* Bottom Row: LiPo Battery Cable */}
             <div className="w-full flex flex-col sm:flex-row items-center justify-between gap-3 sm:gap-0 px-2 sm:px-6">
-              <div className="flex items-center gap-3 bg-slate-900/90 p-2.5 sm:p-3 rounded-xl border border-slate-800 shadow-md">
+              <div className="flex items-center gap-3 p-2.5 sm:p-3 rounded-xl border shadow-md" style={{ backgroundColor: 'var(--bg-elevated)', borderColor: 'var(--border)' }}>
                 <Battery className="w-7 h-7 sm:w-8 sm:h-8 text-amber-400" />
                 <div>
-                  <div className="text-xs font-mono font-bold text-slate-200">LiPo Battery Station</div>
+                  <div className="text-xs font-mono font-bold" style={{ color: 'var(--text-secondary)' }}>LiPo Battery Station</div>
                   <div className="text-[10px] font-mono text-amber-400">4S 14.8V 2200mAh XT60</div>
                 </div>
               </div>
@@ -274,7 +275,7 @@ export const VirtualBench = () => {
                   }`}
                   style={{ minHeight: '2rem', minWidth: '6px' }}
                 >
-                  <span className="sm:absolute sm:-top-5 sm:left-1/2 sm:-translate-x-1/2 text-[10px] font-mono text-slate-400 sm:whitespace-nowrap px-1 sm:px-0 text-center sm:text-left">
+                  <span className="sm:absolute sm:-top-5 sm:left-1/2 sm:-translate-x-1/2 text-[10px] font-mono sm:whitespace-nowrap px-1 sm:px-0 text-center sm:text-left" style={{ color: 'var(--text-muted)' }}>
                     {lipoConnected ? 'LiPo Main Bus Powered' : 'LiPo Disconnected'}
                   </span>
                 </div>
@@ -284,9 +285,10 @@ export const VirtualBench = () => {
                 onClick={toggleLipo}
                 className={`px-3 sm:px-4 py-2 rounded-lg font-mono text-xs font-bold flex items-center gap-2 border transition-all w-full sm:w-auto justify-center ${
                   lipoConnected
-                    ? 'bg-amber-950/80 border-amber-500/80 text-amber-300 shadow-[0_0_15px_rgba(245,158,11,0.3)]'
-                    : 'bg-slate-900 border-slate-700 text-slate-400 hover:text-slate-200'
-                }`}
+                      ? 'bg-amber-950/80 border-amber-500/80 text-amber-300 shadow-[0_0_15px_rgba(245,158,11,0.3)]'
+                      : 'border'
+                  }`}
+                  style={!lipoConnected ? { backgroundColor: 'var(--bg-elevated)', borderColor: 'var(--border)', color: 'var(--text-muted)' } : {}}
               >
                 <Zap className="w-4 h-4" />
                 <span className="sm:hidden">{lipoConnected ? 'DISCONNECT' : 'CONNECT LIPO'}</span>
@@ -297,18 +299,18 @@ export const VirtualBench = () => {
         </div>
 
         {/* Bench Interactive Control Panel & Checklist (1 Column) */}
-        <div className="gcs-panel p-4 sm:p-5 rounded-xl border border-slate-800 flex flex-col justify-between">
+        <div className="gcs-panel p-4 sm:p-5 rounded-xl border flex flex-col justify-between" style={{ borderColor: 'var(--border)' }}>
           <div>
-            <h3 className="text-sm font-bold font-mono text-purple-300 uppercase tracking-wider mb-4 border-b border-slate-800 pb-2">
+            <h3 className="text-sm font-bold font-mono text-purple-300 uppercase tracking-wider mb-4 border-b pb-2" style={{ borderColor: 'var(--border)' }}>
               Physical Hardware Controls
             </h3>
 
             <div className="space-y-2 sm:space-y-3">
               {/* Toggle 1: Propellers */}
-              <div className="p-3 bg-slate-900/80 rounded-lg border border-slate-800 flex items-center justify-between">
+              <div className="p-3 rounded-lg border flex items-center justify-between" style={{ backgroundColor: 'var(--bg-elevated)', borderColor: 'var(--border)' }}>
                 <div>
-                  <div className="text-xs font-mono font-semibold text-slate-200">1. Propellers</div>
-                  <div className="text-[10px] text-slate-400 font-mono">
+                  <div className="text-xs font-mono font-semibold" style={{ color: 'var(--text-secondary)' }}>1. Propellers</div>
+                  <div className="text-[10px] font-mono" style={{ color: 'var(--text-muted)' }}>
                     Status: {propsInstalled ? 'INSTALLED (DANGER)' : 'REMOVED (SAFE)'}
                   </div>
                 </div>
@@ -317,18 +319,19 @@ export const VirtualBench = () => {
                   className={`px-3 py-1.5 rounded font-mono text-xs font-bold transition-all ${
                     propsInstalled
                       ? 'bg-amber-600 hover:bg-amber-500 text-white'
-                      : 'bg-slate-800 border border-slate-700 text-emerald-400'
+                      : 'border text-emerald-400'
                   }`}
+                  style={!propsInstalled ? { backgroundColor: 'var(--bg-badge)', borderColor: 'var(--border)' } : {}}
                 >
                   {propsInstalled ? 'Remove' : 'Install'}
                 </button>
               </div>
 
               {/* Toggle 2: USB Cable */}
-              <div className="p-3 bg-slate-900/80 rounded-lg border border-slate-800 flex items-center justify-between">
+              <div className="p-3 rounded-lg border flex items-center justify-between" style={{ backgroundColor: 'var(--bg-elevated)', borderColor: 'var(--border)' }}>
                 <div>
-                  <div className="text-xs font-mono font-semibold text-slate-200">2. Micro-USB Cable</div>
-                  <div className="text-[10px] text-slate-400 font-mono">
+                  <div className="text-xs font-mono font-semibold" style={{ color: 'var(--text-secondary)' }}>2. Micro-USB Cable</div>
+                  <div className="text-[10px] font-mono" style={{ color: 'var(--text-muted)' }}>
                     Status: {usbConnected ? 'CONNECTED' : 'DISCONNECTED'}
                   </div>
                 </div>
@@ -337,18 +340,19 @@ export const VirtualBench = () => {
                   className={`px-3 py-1.5 rounded font-mono text-xs font-bold transition-all ${
                     usbConnected
                       ? 'bg-cyan-600 hover:bg-cyan-500 text-white'
-                      : 'bg-slate-800 border border-slate-700 text-slate-300'
+                      : 'border'
                   }`}
+                  style={!usbConnected ? { backgroundColor: 'var(--bg-badge)', borderColor: 'var(--border)', color: 'var(--text-secondary)' } : {}}
                 >
                   {usbConnected ? 'Unplug' : 'Plug'}
                 </button>
               </div>
 
               {/* Toggle 3: LiPo Battery */}
-              <div className="p-3 bg-slate-900/80 rounded-lg border border-slate-800 flex items-center justify-between">
+              <div className="p-3 rounded-lg border flex items-center justify-between" style={{ backgroundColor: 'var(--bg-elevated)', borderColor: 'var(--border)' }}>
                 <div>
-                  <div className="text-xs font-mono font-semibold text-slate-200">3. LiPo Battery</div>
-                  <div className="text-[10px] text-slate-400 font-mono">
+                  <div className="text-xs font-mono font-semibold" style={{ color: 'var(--text-secondary)' }}>3. LiPo Battery</div>
+                  <div className="text-[10px] font-mono" style={{ color: 'var(--text-muted)' }}>
                     Status: {lipoConnected ? 'CONNECTED' : 'DISCONNECTED'}
                   </div>
                 </div>
@@ -357,18 +361,19 @@ export const VirtualBench = () => {
                   className={`px-3 py-1.5 rounded font-mono text-xs font-bold transition-all ${
                     lipoConnected
                       ? 'bg-amber-600 hover:bg-amber-500 text-white'
-                      : 'bg-slate-800 border border-slate-700 text-slate-300'
+                      : 'border'
                   }`}
+                  style={!lipoConnected ? { backgroundColor: 'var(--bg-badge)', borderColor: 'var(--border)', color: 'var(--text-secondary)' } : {}}
                 >
                   {lipoConnected ? 'Disconnect' : 'Connect'}
                 </button>
               </div>
 
               {/* Toggle 4: Safety Switch */}
-              <div className="p-3 bg-slate-900/80 rounded-lg border border-slate-800 flex items-center justify-between">
+              <div className="p-3 rounded-lg border flex items-center justify-between" style={{ backgroundColor: 'var(--bg-elevated)', borderColor: 'var(--border)' }}>
                 <div>
-                  <div className="text-xs font-mono font-semibold text-slate-200">4. Safety Switch</div>
-                  <div className="text-[10px] text-slate-400 font-mono">
+                  <div className="text-xs font-mono font-semibold" style={{ color: 'var(--text-secondary)' }}>4. Safety Switch</div>
+                  <div className="text-[10px] font-mono" style={{ color: 'var(--text-muted)' }}>
                     Status: {safetySwitchPressed ? 'PRESSED (SOLID RED)' : 'RELEASED'}
                   </div>
                 </div>
@@ -377,8 +382,9 @@ export const VirtualBench = () => {
                   className={`px-3 py-1.5 rounded font-mono text-xs font-bold transition-all ${
                     safetySwitchPressed
                       ? 'bg-red-600 hover:bg-red-500 text-white'
-                      : 'bg-slate-800 border border-slate-700 text-slate-300'
+                      : 'border'
                   }`}
+                  style={!safetySwitchPressed ? { backgroundColor: 'var(--bg-badge)', borderColor: 'var(--border)', color: 'var(--text-secondary)' } : {}}
                 >
                   {safetySwitchPressed ? 'Release' : 'Press'}
                 </button>
@@ -386,7 +392,7 @@ export const VirtualBench = () => {
             </div>
           </div>
 
-          <div className="mt-4 sm:mt-6 pt-4 border-t border-slate-800 text-[11px] text-slate-400 font-mono space-y-1">
+          <div className="mt-4 sm:mt-6 pt-4 border-t text-[11px] font-mono space-y-1" style={{ borderColor: 'var(--border)', color: 'var(--text-muted)' }}>
             <div className="flex items-center gap-1.5 text-cyan-400 font-semibold">
               <CheckCircle2 className="w-3.5 h-3.5" />
               Physical Setup Checklist:

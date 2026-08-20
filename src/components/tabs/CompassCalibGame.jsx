@@ -256,27 +256,27 @@ export const CompassCalibGame = () => {
       onMouseLeave={onMouseUp}
     >
       {/* Header */}
-      <div className="gcs-panel p-4 sm:p-5 rounded-xl border border-slate-800 flex flex-wrap items-center justify-between gap-3 sm:gap-4">
+      <div className="gcs-panel p-4 sm:p-5 rounded-xl border flex flex-wrap items-center justify-between gap-3 sm:gap-4" style={{ borderColor: 'var(--border)' }}>
         <div>
           <div className="flex items-center gap-2">
             <Compass className="w-5 h-5 text-cyan-400" />
-            <h2 className="text-base sm:text-lg font-bold text-slate-100 font-mono tracking-wider">
+            <h2 className="text-base sm:text-lg font-bold font-mono tracking-wider" style={{ color: 'var(--text-primary)' }}>
               <span className="hidden sm:inline">COMPASS 3D SPHERE POINT CLOUD </span>CALIBRATION
             </h2>
           </div>
-          <p className="text-xs text-slate-400 font-sans mt-0.5">
+          <p className="text-xs font-sans mt-0.5" style={{ color: 'var(--text-muted)' }}>
             Slowly rotate the drone in a figure-8 pattern across all axes to fill the magnetic field sphere.
           </p>
         </div>
         <div className="font-mono text-right">
-          <div className="text-[10px] text-slate-400 uppercase">Points Green</div>
+          <div className="text-[10px] uppercase" style={{ color: 'var(--text-muted)' }}>Points Green</div>
           <div className="text-base font-bold text-emerald-400">{displayGreen} / {TOTAL_PTS}</div>
         </div>
       </div>
 
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-4 sm:gap-6">
         {/* Canvas */}
-        <div className="lg:col-span-2 gcs-panel p-3 sm:p-4 rounded-xl border border-slate-800 bg-slate-950 flex flex-col items-center justify-center min-h-[300px] sm:min-h-[380px] relative overflow-hidden">
+        <div className="lg:col-span-2 gcs-panel p-3 sm:p-4 rounded-xl border flex flex-col items-center justify-center min-h-[300px] sm:min-h-[380px] relative overflow-hidden" style={{ borderColor: 'var(--border)', backgroundColor: 'var(--bg-surface)' }}>
           <div className="absolute top-4 left-4 text-xs font-mono flex items-center gap-2 z-10">
             <RotateCw className={`w-4 h-4 ${autoRotate ? 'animate-spin text-emerald-400' : 'text-cyan-400'}`} />
             {compassState.completed
@@ -297,9 +297,9 @@ export const CompassCalibGame = () => {
         </div>
 
         {/* Side Panel */}
-        <div className="gcs-panel p-5 rounded-xl border border-slate-800 flex flex-col justify-between font-mono">
+        <div className="gcs-panel p-5 rounded-xl border flex flex-col justify-between font-mono" style={{ borderColor: 'var(--border)' }}>
           <div className="space-y-3">
-            <h3 className="text-sm font-bold text-slate-200 uppercase tracking-wider border-b border-slate-800 pb-2">
+            <h3 className="text-sm font-bold uppercase tracking-wider border-b pb-2" style={{ borderColor: 'var(--border)', color: 'var(--text-secondary)' }}>
               Calibration Controls
             </h3>
 
@@ -309,11 +309,12 @@ export const CompassCalibGame = () => {
               disabled={compassState.completed}
               className={`w-full py-3 px-4 rounded-lg font-bold text-xs flex items-center justify-center gap-2 border transition-all ${
                 compassState.completed
-                  ? 'bg-slate-900 border-slate-700 text-slate-500 cursor-not-allowed'
-                  : autoRotate
-                  ? 'bg-emerald-950 border-emerald-500 text-emerald-300 shadow-[0_0_15px_rgba(16,185,129,0.3)]'
-                  : 'bg-slate-900 border-slate-700 text-cyan-300 hover:border-cyan-500'
-              }`}
+                    ? 'border cursor-not-allowed'
+                    : autoRotate
+                    ? 'bg-emerald-950 border-emerald-500 text-emerald-300 shadow-[0_0_15px_rgba(16,185,129,0.3)]'
+                    : 'border text-cyan-300 hover:border-cyan-500'
+                }`}
+                style={(compassState.completed || !autoRotate) && !autoRotate ? { backgroundColor: 'var(--bg-elevated)', borderColor: compassState.completed ? 'var(--border)' : 'var(--border)', color: compassState.completed ? 'var(--text-subtle)' : 'var(--select-text-cyan)' } : {}}
             >
               {autoRotate ? <Square className="w-4 h-4" /> : <Play className="w-4 h-4" />}
               {autoRotate ? 'STOP AUTO-ORBIT' : 'START 360° AUTO-ORBIT'}
@@ -325,15 +326,16 @@ export const CompassCalibGame = () => {
               disabled={compassState.completed}
               className={`w-full py-2.5 px-4 rounded-lg font-bold text-xs flex items-center justify-center gap-2 border transition-all ${
                 compassState.completed
-                  ? 'bg-slate-900 border-slate-700 text-slate-500 cursor-not-allowed'
-                  : 'bg-purple-950/60 border-purple-700 text-purple-300 hover:bg-purple-900/60 hover:border-purple-500'
-              }`}
+                    ? 'border cursor-not-allowed'
+                    : 'bg-purple-950/60 border-purple-700 text-purple-300 hover:bg-purple-900/60 hover:border-purple-500'
+                }`}
+                style={compassState.completed ? { backgroundColor: 'var(--bg-elevated)', borderColor: 'var(--border)', color: 'var(--text-subtle)' } : {}}
             >
               <Zap className="w-4 h-4" />
               QUICK CALIBRATE (SKIP)
             </button>
 
-            <div className="p-3 bg-slate-950 rounded-lg border border-slate-800 text-xs text-slate-300 font-sans space-y-1.5">
+            <div className="p-3 rounded-lg border text-xs font-sans space-y-1.5" style={{ backgroundColor: 'var(--bg-surface)', borderColor: 'var(--border)', color: 'var(--text-secondary)' }}>
               <div className="font-mono font-bold text-purple-300 mb-1">How it works:</div>
               <div>• White dots = unsampled field vectors</div>
               <div>• Green dots = magnetic field captured</div>
@@ -356,8 +358,8 @@ export const CompassCalibGame = () => {
                   />
                 </svg>
                 <div className="absolute inset-0 flex flex-col items-center justify-center">
-                  <span className="text-lg font-bold text-slate-100">{pct}%</span>
-                  <span className="text-[9px] text-slate-500 uppercase">filled</span>
+                  <span className="text-lg font-bold" style={{ color: 'var(--text-primary)' }}>{pct}%</span>
+                  <span className="text-[9px] uppercase" style={{ color: 'var(--text-subtle)' }}>filled</span>
                 </div>
               </div>
             </div>
@@ -378,8 +380,9 @@ export const CompassCalibGame = () => {
             className={`w-full py-3 mt-4 rounded-lg font-bold text-xs flex items-center justify-center gap-2 transition-all ${
               compassState.completed
                 ? 'bg-emerald-600 hover:bg-emerald-500 text-white shadow-lg shadow-emerald-950/50'
-                : 'bg-slate-800 text-slate-500 cursor-not-allowed'
+                : 'cursor-not-allowed'
             }`}
+            style={!compassState.completed ? { backgroundColor: 'var(--bg-elevated)', color: 'var(--text-subtle)' } : {}}
           >
             <RefreshCw className={`w-4 h-4 ${compassState.completed ? 'animate-spin' : ''}`} />
             {compassState.completed ? 'REBOOT AUTOPILOT NOW' : `FILL SPHERE TO COMPLETE (${pct}%)`}

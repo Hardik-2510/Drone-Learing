@@ -26,21 +26,21 @@ export const EscCalibGame = () => {
   return (
     <div className="space-y-4 sm:space-y-6">
       {/* Header */}
-      <div className="gcs-panel p-4 sm:p-5 rounded-xl border border-slate-800 flex flex-wrap items-center justify-between gap-3 sm:gap-4">
+      <div className="gcs-panel p-4 sm:p-5 rounded-xl border flex flex-wrap items-center justify-between gap-3 sm:gap-4" style={{ borderColor: 'var(--border)' }}>
         <div>
           <div className="flex items-center gap-2">
             <Zap className="w-5 h-5 text-amber-400" />
-            <h2 className="text-base sm:text-lg font-bold text-slate-100 font-mono tracking-wider">
+            <h2 className="text-base sm:text-lg font-bold font-mono tracking-wider" style={{ color: 'var(--text-primary)' }}>
               <span className="hidden sm:inline">ALL-AT-ONCE </span>ESC THROTTLE CALIBRATION
             </h2>
           </div>
-          <p className="text-xs text-slate-400 font-sans mt-0.5">
+          <p className="text-xs font-sans mt-0.5" style={{ color: 'var(--text-muted)' }}>
             Calibrate Electronic Speed Controller (ESC) max/min throttle range across all 4 motors simultaneously.
           </p>
         </div>
 
         <div className="flex items-center gap-2 font-mono">
-          <span className="text-xs text-slate-400">ESC Step:</span>
+          <span className="text-xs" style={{ color: 'var(--text-muted)' }}>ESC Step:</span>
           <span className="text-sm font-bold text-amber-400 bg-amber-950/60 px-3 py-1 rounded border border-amber-500/50">
             STEP {escState.step} / 5
           </span>
@@ -69,28 +69,30 @@ export const EscCalibGame = () => {
                 key={st.num}
                 className={`p-4 rounded-xl border transition-all ${
                   isDone
-                    ? 'bg-emerald-950/30 border-emerald-500/50 text-emerald-300'
-                    : isCurrent
-                    ? 'bg-amber-950/40 border-amber-500 text-amber-200 shadow-[0_0_20px_rgba(245,158,11,0.2)]'
-                    : 'bg-slate-950/60 border-slate-800 text-slate-500 opacity-60'
-                }`}
+                      ? 'bg-emerald-950/30 border-emerald-500/50 text-emerald-300'
+                      : isCurrent
+                      ? 'bg-amber-950/40 border-amber-500 text-amber-200 shadow-[0_0_20px_rgba(245,158,11,0.2)]'
+                      : 'border opacity-60'
+                  }`}
+                  style={(!isDone && !isCurrent) ? { backgroundColor: 'var(--bg-surface)', borderColor: 'var(--border)', color: 'var(--text-subtle)' } : {}}
               >
                 <div className="flex items-start justify-between">
                   <div className="flex items-center gap-3">
                     <div
                       className={`w-8 h-8 rounded-lg font-bold text-xs flex items-center justify-center ${
                         isDone
-                          ? 'bg-emerald-500 text-slate-950'
-                          : isCurrent
-                          ? 'bg-amber-500 text-slate-950 animate-bounce'
-                          : 'bg-slate-800 text-slate-500'
-                      }`}
+                            ? 'bg-emerald-500 text-slate-950'
+                            : isCurrent
+                            ? 'bg-amber-500 text-slate-950 animate-bounce'
+                            : ''
+                          }`}
+                          style={(!isDone && !isCurrent) ? { backgroundColor: 'var(--bg-badge)', color: 'var(--text-subtle)' } : {}}
                     >
                       {st.num}
                     </div>
                     <div>
                       <h4 className="text-sm font-bold">{st.title}</h4>
-                      <p className="text-xs text-slate-300 font-sans mt-0.5">{st.desc}</p>
+                      <p className="text-xs font-sans mt-0.5" style={{ color: 'var(--text-secondary)' }}>{st.desc}</p>
                     </div>
                   </div>
 
@@ -143,30 +145,30 @@ export const EscCalibGame = () => {
         </div>
 
         {/* Status & Feedback Panel (1 Col) */}
-        <div className="gcs-panel p-5 rounded-xl border border-slate-800 flex flex-col justify-between font-mono">
+        <div className="gcs-panel p-5 rounded-xl border flex flex-col justify-between font-mono" style={{ borderColor: 'var(--border)' }}>
           <div>
-            <h3 className="text-sm font-bold text-slate-200 uppercase tracking-wider mb-4 border-b border-slate-800 pb-2">
+            <h3 className="text-sm font-bold uppercase tracking-wider mb-4 border-b pb-2" style={{ borderColor: 'var(--border)', color: 'var(--text-secondary)' }}>
               ESC Audio Beep Feedback
             </h3>
 
             <div className="space-y-3 text-xs">
-              <div className="p-3 bg-slate-950 rounded-lg border border-slate-800">
+              <div className="p-3 rounded-lg border" style={{ backgroundColor: 'var(--bg-surface)', borderColor: 'var(--border)' }}>
                 <div className="text-amber-400 font-bold mb-1">ESC Initialization Beeps:</div>
-                <p className="text-slate-400 font-sans">
+                <p className="font-sans" style={{ color: 'var(--text-muted)' }}>
                   {escState.beepsPlayed ? '🎵 Musical rising tone sequence heard!' : 'Waiting for LiPo re-plug step...'}
                 </p>
               </div>
 
-              <div className="p-3 bg-slate-950 rounded-lg border border-slate-800">
+              <div className="p-3 rounded-lg border" style={{ backgroundColor: 'var(--bg-surface)', borderColor: 'var(--border)' }}>
                 <div className="text-emerald-400 font-bold mb-1">Calibration Confirmation:</div>
-                <p className="text-slate-400 font-sans">
+                <p className="font-sans" style={{ color: 'var(--text-muted)' }}>
                   {escState.completed ? '🎵 Long confirmation chime played!' : 'Waiting for throttle MIN step...'}
                 </p>
               </div>
             </div>
           </div>
 
-          <div className="pt-4 border-t border-slate-800 text-[11px] text-slate-400 font-sans">
+          <div className="pt-4 border-t text-[11px] font-sans" style={{ borderColor: 'var(--border)', color: 'var(--text-muted)' }}>
             <span className="font-mono font-bold text-amber-400">Why All-at-Once Calibration?</span>
             <p className="mt-1">
               It ensures all 4 motor ESCs register identical PWM endpoints [1100us - 1900us], preventing motor spin desync.

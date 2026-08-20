@@ -86,21 +86,21 @@ export const AccelCalibGame = () => {
   return (
     <div className="space-y-4 sm:space-y-6">
       {/* Header */}
-      <div className="gcs-panel p-4 sm:p-5 rounded-xl border border-slate-800 flex flex-wrap items-center justify-between gap-3 sm:gap-4">
+      <div className="gcs-panel p-4 sm:p-5 rounded-xl border flex flex-wrap items-center justify-between gap-3 sm:gap-4" style={{ borderColor: 'var(--border)' }}>
         <div>
           <div className="flex items-center gap-2">
             <Activity className="w-5 h-5 text-emerald-400" />
-            <h2 className="text-base sm:text-lg font-bold text-slate-100 font-mono tracking-wider">
+            <h2 className="text-base sm:text-lg font-bold font-mono tracking-wider" style={{ color: 'var(--text-primary)' }}>
               <span className="hidden sm:inline">3-AXIS ACCELEROMETER </span>6-POSITION CALIBRATION
             </h2>
           </div>
-          <p className="text-xs text-slate-400 font-sans mt-0.5">
+          <p className="text-xs font-sans mt-0.5" style={{ color: 'var(--text-muted)' }}>
             Calibrate gravity offsets across 6 cardinal positions. Strictly requires 0.0 movement during 2s sampling.
           </p>
         </div>
 
         <div className="flex items-center gap-2">
-          <span className="text-xs font-mono text-slate-400">Progress:</span>
+          <span className="text-xs font-mono" style={{ color: 'var(--text-muted)' }}>Progress:</span>
           <span className="text-sm font-mono font-bold text-emerald-400 bg-emerald-950/60 px-3 py-1 rounded border border-emerald-500/50">
             {accelState.completedSteps.filter(Boolean).length} / 6 POSITIONS
           </span>
@@ -117,10 +117,10 @@ export const AccelCalibGame = () => {
 
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-4 sm:gap-6">
         {/* 3D Drone Orientation Canvas (2 Cols) */}
-        <div className="lg:col-span-2 gcs-panel p-4 sm:p-6 rounded-xl border border-slate-800 bg-slate-950 flex flex-col items-center justify-center min-h-[300px] sm:min-h-[380px] relative overflow-hidden">
+        <div className="lg:col-span-2 gcs-panel p-4 sm:p-6 rounded-xl border flex flex-col items-center justify-center min-h-[300px] sm:min-h-[380px] relative overflow-hidden" style={{ borderColor: 'var(--border)', backgroundColor: 'var(--bg-surface)' }}>
           <div className="absolute top-4 left-4 text-xs font-mono text-cyan-400 flex items-center gap-2">
             <span className="w-2 h-2 rounded-full bg-cyan-400 animate-ping" />
-            Position {accelState.currentStepIndex + 1}: <span className="font-bold text-slate-100">{currentTarget?.name}</span>
+            Position {accelState.currentStepIndex + 1}: <span className="font-bold" style={{ color: 'var(--text-primary)' }}>{currentTarget?.name}</span>
           </div>
 
           {/* 3D Visual Model Box — scales with screen */}
@@ -162,15 +162,15 @@ export const AccelCalibGame = () => {
           {/* Sampling Overlay Progress Bar */}
           {isSampling && (
             <div className="absolute inset-0 bg-slate-950/90 flex flex-col items-center justify-center p-6 z-20 font-mono">
-              <div className="w-full max-w-md bg-slate-900 p-6 rounded-xl border border-emerald-500/80 text-center shadow-2xl">
+              <div className="w-full max-w-md p-6 rounded-xl border border-emerald-500/80 text-center shadow-2xl" style={{ backgroundColor: 'var(--bg-panel)' }}>
                 <h4 className="text-base font-bold text-emerald-400 mb-2 flex items-center justify-center gap-2">
                   <Activity className="w-5 h-5 animate-spin" />
                   SAMPLING ACCELEROMETER... DO NOT MOVE!
                 </h4>
-                <p className="text-xs text-slate-300 mb-4 font-sans">
+                <p className="text-xs mb-4 font-sans" style={{ color: 'var(--text-secondary)' }}>
                   Hold drone perfectly STILL for 2 seconds while gyro/accel gravity vector is recorded.
                 </p>
-                <div className="w-full bg-slate-950 h-4 rounded-full overflow-hidden border border-slate-800 p-0.5 mb-2">
+                <div className="w-full h-4 rounded-full overflow-hidden border p-0.5 mb-2" style={{ backgroundColor: 'var(--bg-surface)', borderColor: 'var(--border)' }}>
                   <div
                     className="bg-emerald-500 h-full rounded-full transition-all duration-100"
                     style={{ width: `${sampleProgress}%` }}
@@ -191,9 +191,9 @@ export const AccelCalibGame = () => {
         </div>
 
         {/* 6 Position List & Action Controls (1 Col) */}
-        <div className="gcs-panel p-5 rounded-xl border border-slate-800 flex flex-col justify-between font-mono">
+        <div className="gcs-panel p-5 rounded-xl border flex flex-col justify-between font-mono" style={{ borderColor: 'var(--border)' }}>
           <div>
-            <h3 className="text-sm font-bold text-slate-200 uppercase tracking-wider mb-4 border-b border-slate-800 pb-2">
+            <h3 className="text-sm font-bold uppercase tracking-wider mb-4 border-b pb-2" style={{ borderColor: 'var(--border)', color: 'var(--text-secondary)' }}>
               6-Axis Cardinal Positions
             </h3>
 
@@ -205,18 +205,20 @@ export const AccelCalibGame = () => {
                   <div
                     key={s.name}
                     className={`p-2.5 rounded-lg border flex items-center justify-between text-xs transition-all ${
-                      isDone
-                        ? 'bg-emerald-950/30 border-emerald-500/50 text-emerald-300'
-                        : isCurrent
-                        ? 'bg-purple-950/50 border-purple-500 text-purple-200 shadow-[0_0_10px_rgba(168,85,247,0.2)]'
-                        : 'bg-slate-900/60 border-slate-800 text-slate-500'
-                    }`}
+                        isDone
+                          ? 'bg-emerald-950/30 border-emerald-500/50 text-emerald-300'
+                          : isCurrent
+                          ? 'bg-purple-950/50 border-purple-500 text-purple-200 shadow-[0_0_10px_rgba(168,85,247,0.2)]'
+                          : 'border'
+                      }`}
+                      style={(!isDone && !isCurrent) ? { backgroundColor: 'var(--bg-elevated)', borderColor: 'var(--border)', color: 'var(--text-subtle)' } : {}}
                   >
                     <div className="flex items-center gap-2">
                       {isDone ? (
                         <CheckCircle2 className="w-4 h-4 text-emerald-400" />
                       ) : (
-                        <span className={`w-4 h-4 rounded-full text-[10px] font-bold flex items-center justify-center ${isCurrent ? 'bg-purple-500 text-slate-950' : 'bg-slate-800 text-slate-500'}`}>
+                        <span className={`w-4 h-4 rounded-full text-[10px] font-bold flex items-center justify-center ${isCurrent ? 'bg-purple-500 text-slate-950' : 'text-slate-500'}`}
+                              style={!isCurrent ? { backgroundColor: 'var(--bg-badge)' } : {}}>
                           {idx + 1}
                         </span>
                       )}
@@ -229,12 +231,12 @@ export const AccelCalibGame = () => {
             </div>
 
             {/* Computed Offsets Table */}
-            <div className="bg-slate-950 p-3 rounded-lg border border-slate-800 text-xs mb-4">
-              <div className="text-[10px] text-slate-400 uppercase mb-1 font-bold">Calculated Offsets:</div>
-              <div className="grid grid-cols-3 gap-2 text-center text-slate-300 text-[11px]">
-                <div className="bg-slate-900 p-1 rounded">X: <span className="text-cyan-400 font-bold">{accelState.offsets.x}</span></div>
-                <div className="bg-slate-900 p-1 rounded">Y: <span className="text-cyan-400 font-bold">{accelState.offsets.y}</span></div>
-                <div className="bg-slate-900 p-1 rounded">Z: <span className="text-cyan-400 font-bold">{accelState.offsets.z}</span></div>
+            <div className="p-3 rounded-lg border text-xs mb-4" style={{ backgroundColor: 'var(--bg-surface)', borderColor: 'var(--border)' }}>
+              <div className="text-[10px] uppercase mb-1 font-bold" style={{ color: 'var(--text-muted)' }}>Calculated Offsets:</div>
+              <div className="grid grid-cols-3 gap-2 text-center text-[11px]" style={{ color: 'var(--text-secondary)' }}>
+                <div className="p-1 rounded" style={{ backgroundColor: 'var(--bg-elevated)' }}>X: <span className="text-cyan-400 font-bold">{accelState.offsets.x}</span></div>
+                <div className="p-1 rounded" style={{ backgroundColor: 'var(--bg-elevated)' }}>Y: <span className="text-cyan-400 font-bold">{accelState.offsets.y}</span></div>
+                <div className="p-1 rounded" style={{ backgroundColor: 'var(--bg-elevated)' }}>Z: <span className="text-cyan-400 font-bold">{accelState.offsets.z}</span></div>
               </div>
             </div>
           </div>

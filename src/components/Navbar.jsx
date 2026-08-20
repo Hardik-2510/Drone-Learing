@@ -20,6 +20,8 @@ import {
   ExternalLink,
   Menu,
   X,
+  Sun,
+  Moon,
 } from 'lucide-react';
 
 export const Navbar = () => {
@@ -38,21 +40,25 @@ export const Navbar = () => {
     soundMuted,
     toggleSound,
     allCalibrationsDone,
+    theme,
+    toggleTheme,
   } = useSimulator();
 
   const tabs = [
-    { id: 'bench',    label: '1. Virtual Bench',    shortLabel: '1',  icon: Wrench },
-    { id: 'flashing', label: '2. Firmware Flash',   shortLabel: '2',  icon: Cpu },
-    { id: 'accel',    label: '3. Accel (6-Axis)',   shortLabel: '3',  icon: Activity },
-    { id: 'compass',  label: '4. Compass 3D',       shortLabel: '4',  icon: Compass },
-    { id: 'radio',    label: '5. Radio Setup',      shortLabel: '5',  icon: Radio },
-    { id: 'esc',      label: '6. ESC Throttle',     shortLabel: '6',  icon: Zap },
+    { id: 'bench',    label: '1. Virtual Bench',    shortLabel: '1',   icon: Wrench },
+    { id: 'flashing', label: '2. Firmware Flash',   shortLabel: '2',   icon: Cpu },
+    { id: 'accel',    label: '3. Accel (6-Axis)',   shortLabel: '3',   icon: Activity },
+    { id: 'compass',  label: '4. Compass 3D',       shortLabel: '4',   icon: Compass },
+    { id: 'radio',    label: '5. Radio Setup',      shortLabel: '5',   icon: Radio },
+    { id: 'esc',      label: '6. ESC Throttle',     shortLabel: '6',   icon: Zap },
     { id: 'sitl',     label: '7. 3D SITL Arena 🚀', shortLabel: '7🚀', icon: Navigation, requiresCalib: true },
   ];
 
+  const isLight = theme === 'light';
+
   return (
     <>
-      <header className="gcs-header sticky top-0 z-40 border-b border-slate-800 shadow-2xl">
+      <header className="gcs-header sticky top-0 z-40 border-b" style={{ borderColor: 'var(--border)' }}>
 
         {/* ── Top GCS Bar ── */}
         <div className="max-w-7xl mx-auto px-3 sm:px-4 py-2 sm:py-2.5 flex items-center justify-between gap-2">
@@ -63,13 +69,13 @@ export const Navbar = () => {
               <Layers className="w-4 h-4 sm:w-5 sm:h-5 text-purple-400 animate-pulse" />
             </div>
             <div className="min-w-0">
-              <h1 className="text-sm sm:text-base font-bold text-slate-100 font-mono tracking-wide flex items-center gap-1.5 sm:gap-2 flex-wrap">
+              <h1 className="text-sm sm:text-base font-bold font-mono tracking-wide flex items-center gap-1.5 sm:gap-2 flex-wrap" style={{ color: 'var(--text-primary)' }}>
                 <span className="whitespace-nowrap">Mission Planner GCS</span>
                 <span className="hidden sm:inline px-2 py-0.5 text-[10px] bg-purple-900/60 text-purple-300 border border-purple-700/50 rounded-full font-mono whitespace-nowrap">
                   Radiolink Crossflight V2
                 </span>
               </h1>
-              <p className="text-[10px] sm:text-[11px] text-slate-400 font-sans hidden xs:block truncate">
+              <p className="text-[10px] sm:text-[11px] font-sans hidden xs:block truncate" style={{ color: 'var(--text-muted)' }}>
                 Firmware Flashing &amp; Calibration Simulator by Hardik Patel
               </p>
             </div>
@@ -79,7 +85,10 @@ export const Navbar = () => {
           <div className="flex items-center gap-1.5 sm:gap-2 shrink-0">
 
             {/* Docs & Source — always visible */}
-            <div className="flex items-center gap-1 sm:gap-2 bg-slate-950/80 p-1 sm:p-1.5 rounded-lg border border-slate-800">
+            <div
+              className="flex items-center gap-1 sm:gap-2 p-1 sm:p-1.5 rounded-lg border"
+              style={{ backgroundColor: 'var(--bg-surface)', borderColor: 'var(--border)' }}
+            >
               <button
                 onClick={() => setShowDocsModal(true)}
                 title="Open Commissioning Documentation & User Guide"
@@ -94,22 +103,27 @@ export const Navbar = () => {
                 target="_blank"
                 rel="noopener noreferrer"
                 title="Open GitHub Source Repository"
-                className="px-2 sm:px-3 py-1 rounded-md bg-slate-900 hover:bg-slate-850 border border-slate-700 hover:border-cyan-500/50 text-cyan-300 hover:text-cyan-200 text-xs font-mono font-semibold hidden sm:flex items-center gap-1.5 transition-all cursor-pointer"
+                className="px-2 sm:px-3 py-1 rounded-md border hover:border-cyan-500/50 text-xs font-mono font-semibold hidden sm:flex items-center gap-1.5 transition-all cursor-pointer"
+                style={{ backgroundColor: 'var(--bg-elevated)', borderColor: 'var(--border)', color: 'var(--select-text-cyan)' }}
               >
                 <Code className="w-3.5 h-3.5 text-cyan-400" />
                 <span>Source</span>
-                <ExternalLink className="w-3 h-3 text-slate-400" />
+                <ExternalLink className="w-3 h-3" style={{ color: 'var(--text-muted)' }} />
               </a>
             </div>
 
             {/* Desktop MAVLink Controls — hidden on mobile */}
-            <div className="hidden sm:flex items-center gap-3 bg-slate-950/80 p-1.5 rounded-lg border border-slate-800">
+            <div
+              className="hidden sm:flex items-center gap-3 p-1.5 rounded-lg border"
+              style={{ backgroundColor: 'var(--bg-surface)', borderColor: 'var(--border)' }}
+            >
               <div className="flex items-center gap-2">
-                <label className="text-[10px] font-mono text-slate-400 uppercase">Port:</label>
+                <label className="text-[10px] font-mono uppercase" style={{ color: 'var(--text-muted)' }}>Port:</label>
                 <select
                   value={comPort}
                   onChange={(e) => setComPort(e.target.value)}
-                  className="bg-slate-900 text-cyan-300 text-xs font-mono px-2 py-1 rounded border border-slate-700 focus:outline-none focus:border-cyan-500"
+                  className="text-xs font-mono px-2 py-1 rounded border focus:outline-none focus:border-cyan-500"
+                  style={{ backgroundColor: 'var(--bg-input)', borderColor: 'var(--border)', color: 'var(--select-text-cyan)' }}
                 >
                   <option>COM3 - Radiolink Crossflight V2</option>
                   <option>COM4 - MAVLink Telemetry 915MHz</option>
@@ -118,11 +132,12 @@ export const Navbar = () => {
               </div>
 
               <div className="flex items-center gap-2">
-                <label className="text-[10px] font-mono text-slate-400 uppercase">Baud:</label>
+                <label className="text-[10px] font-mono uppercase" style={{ color: 'var(--text-muted)' }}>Baud:</label>
                 <select
                   value={baudRate}
                   onChange={(e) => setBaudRate(Number(e.target.value))}
-                  className="bg-slate-900 text-emerald-300 text-xs font-mono px-2 py-1 rounded border border-slate-700 focus:outline-none focus:border-emerald-500"
+                  className="text-xs font-mono px-2 py-1 rounded border focus:outline-none focus:border-emerald-500"
+                  style={{ backgroundColor: 'var(--bg-input)', borderColor: 'var(--border)', color: 'var(--select-text-emerald)' }}
                 >
                   <option value={115200}>115200</option>
                   <option value={57600}>57600</option>
@@ -148,24 +163,44 @@ export const Navbar = () => {
               <button
                 onClick={toggleSound}
                 title={soundMuted ? 'Unmute Audio Tones' : 'Mute Audio Tones'}
-                className="p-1.5 text-slate-400 hover:text-cyan-400 hover:bg-slate-900 rounded transition-all ml-1"
+                className="p-1.5 hover:bg-slate-900/40 rounded transition-all ml-1"
+                style={{ color: 'var(--text-muted)' }}
               >
                 {soundMuted ? <VolumeX className="w-4 h-4 text-red-400" /> : <Volume2 className="w-4 h-4 text-emerald-400" />}
               </button>
             </div>
+
+            {/* ☀️/🌙 Theme Toggle — always visible */}
+            <button
+              onClick={toggleTheme}
+              title={isLight ? 'Switch to Dark Mode' : 'Switch to Light Mode'}
+              className="p-1.5 sm:p-2 rounded-lg border transition-all hover:scale-105 active:scale-95"
+              style={{
+                backgroundColor: isLight ? '#fef3c7' : '#1e293b',
+                borderColor: isLight ? '#fbbf24' : '#334155',
+                color: isLight ? '#d97706' : '#94a3b8',
+              }}
+            >
+              {isLight
+                ? <Sun className="w-4 h-4 text-amber-500" />
+                : <Moon className="w-4 h-4 text-slate-400" />
+              }
+            </button>
 
             {/* Mobile: Sound + Hamburger */}
             <div className="flex items-center gap-1 sm:hidden">
               <button
                 onClick={toggleSound}
                 title={soundMuted ? 'Unmute' : 'Mute'}
-                className="p-1.5 text-slate-400 hover:text-cyan-400 hover:bg-slate-900 rounded transition-all"
+                className="p-1.5 rounded transition-all"
+                style={{ color: 'var(--text-muted)' }}
               >
                 {soundMuted ? <VolumeX className="w-4 h-4 text-red-400" /> : <Volume2 className="w-4 h-4 text-emerald-400" />}
               </button>
               <button
                 onClick={() => setMobileMenuOpen((o) => !o)}
-                className="p-1.5 text-slate-300 hover:text-white hover:bg-slate-800 rounded-lg transition-all border border-slate-700"
+                className="p-1.5 rounded-lg transition-all border"
+                style={{ color: 'var(--text-secondary)', borderColor: 'var(--border)', backgroundColor: 'var(--bg-elevated)' }}
                 aria-label="Toggle connection menu"
               >
                 {mobileMenuOpen ? <X className="w-4 h-4" /> : <Menu className="w-4 h-4" />}
@@ -180,7 +215,10 @@ export const Navbar = () => {
             mobileMenuOpen ? 'max-h-72 opacity-100' : 'max-h-0 opacity-0'
           }`}
         >
-          <div className="border-t border-slate-800 bg-slate-950/95 px-3 py-3 space-y-3">
+          <div
+            className="border-t px-3 py-3 space-y-3"
+            style={{ borderColor: 'var(--border)', backgroundColor: 'var(--bg-surface)' }}
+          >
             {/* Connect status bar */}
             <div className="flex items-center justify-between gap-2">
               <span className={`text-xs font-mono font-bold flex items-center gap-1.5 ${mavlinkConnected ? 'text-emerald-400' : 'text-red-400'}`}>
@@ -202,11 +240,12 @@ export const Navbar = () => {
             {/* Port & Baud selects */}
             <div className="grid grid-cols-2 gap-2">
               <div>
-                <label className="text-[10px] font-mono text-slate-400 uppercase block mb-0.5">Port:</label>
+                <label className="text-[10px] font-mono uppercase block mb-0.5" style={{ color: 'var(--text-muted)' }}>Port:</label>
                 <select
                   value={comPort}
                   onChange={(e) => setComPort(e.target.value)}
-                  className="w-full bg-slate-900 text-cyan-300 text-xs font-mono px-2 py-1.5 rounded border border-slate-700 focus:outline-none focus:border-cyan-500"
+                  className="w-full text-xs font-mono px-2 py-1.5 rounded border focus:outline-none focus:border-cyan-500"
+                  style={{ backgroundColor: 'var(--bg-input)', borderColor: 'var(--border)', color: 'var(--select-text-cyan)' }}
                 >
                   <option>COM3 - Radiolink Crossflight V2</option>
                   <option>COM4 - MAVLink Telemetry 915MHz</option>
@@ -214,11 +253,12 @@ export const Navbar = () => {
                 </select>
               </div>
               <div>
-                <label className="text-[10px] font-mono text-slate-400 uppercase block mb-0.5">Baud Rate:</label>
+                <label className="text-[10px] font-mono uppercase block mb-0.5" style={{ color: 'var(--text-muted)' }}>Baud Rate:</label>
                 <select
                   value={baudRate}
                   onChange={(e) => setBaudRate(Number(e.target.value))}
-                  className="w-full bg-slate-900 text-emerald-300 text-xs font-mono px-2 py-1.5 rounded border border-slate-700 focus:outline-none focus:border-emerald-500"
+                  className="w-full text-xs font-mono px-2 py-1.5 rounded border focus:outline-none focus:border-emerald-500"
+                  style={{ backgroundColor: 'var(--bg-input)', borderColor: 'var(--border)', color: 'var(--select-text-emerald)' }}
                 >
                   <option value={115200}>115200</option>
                   <option value={57600}>57600</option>
@@ -232,17 +272,18 @@ export const Navbar = () => {
               href="https://github.com/Hardik-2510/Drone-Learing"
               target="_blank"
               rel="noopener noreferrer"
-              className="flex items-center gap-1.5 text-cyan-300 text-xs font-mono hover:text-cyan-200 transition-all"
+              className="flex items-center gap-1.5 text-xs font-mono transition-all"
+              style={{ color: 'var(--select-text-cyan)' }}
             >
               <Code className="w-3.5 h-3.5 text-cyan-400" />
               Source Code
-              <ExternalLink className="w-3 h-3 text-slate-400" />
+              <ExternalLink className="w-3 h-3" style={{ color: 'var(--text-muted)' }} />
             </a>
           </div>
         </div>
 
         {/* ── Tab Navigation ── */}
-        <div className="bg-slate-950/90 border-t border-slate-800 px-2 sm:px-4">
+        <div className="border-t px-2 sm:px-4" style={{ borderColor: 'var(--border)', backgroundColor: 'var(--bg-surface)' }}>
           <div className="max-w-7xl mx-auto flex items-center overflow-x-auto py-1 gap-0.5 sm:gap-1 scrollbar-none">
             {tabs.map((tab) => {
               const Icon = tab.icon;
@@ -256,22 +297,44 @@ export const Navbar = () => {
                   title={isLocked ? 'Complete all calibrations to unlock 3D SITL Arena' : tab.label}
                   className={`px-2 sm:px-3 py-2 rounded-md font-mono text-xs font-medium flex items-center gap-1 sm:gap-2 transition-all whitespace-nowrap relative shrink-0 ${
                     isLocked
-                      ? 'text-slate-600 border border-slate-800/50 cursor-not-allowed'
+                      ? 'border border-transparent cursor-not-allowed'
                       : isActive
                       ? 'bg-purple-900/50 text-purple-200 border border-purple-500/60 shadow-[0_0_12px_rgba(168,85,247,0.25)]'
-                      : 'text-slate-400 hover:text-slate-200 hover:bg-slate-900/60 border border-transparent'
+                      : 'border border-transparent'
                   }`}
+                  style={
+                    isLocked
+                      ? { color: 'var(--text-faint)' }
+                      : isActive
+                      ? {}
+                      : { color: 'var(--text-muted)' }
+                  }
+                  onMouseEnter={e => {
+                    if (!isLocked && !isActive) {
+                      e.currentTarget.style.color = 'var(--text-primary)';
+                      e.currentTarget.style.backgroundColor = 'var(--bg-elevated)';
+                    }
+                  }}
+                  onMouseLeave={e => {
+                    if (!isLocked && !isActive) {
+                      e.currentTarget.style.color = 'var(--text-muted)';
+                      e.currentTarget.style.backgroundColor = '';
+                    }
+                  }}
                 >
                   {isLocked ? (
-                    <Lock className="w-3.5 h-3.5 text-slate-600" />
+                    <Lock className="w-3.5 h-3.5" style={{ color: 'var(--text-faint)' }} />
                   ) : (
-                    <Icon className={`w-3.5 h-3.5 shrink-0 ${isActive ? 'text-purple-400' : 'text-slate-500'}`} />
+                    <Icon className={`w-3.5 h-3.5 shrink-0 ${isActive ? 'text-purple-400' : ''}`} style={!isActive ? { color: 'var(--text-subtle)' } : {}} />
                   )}
                   {/* Mobile: short label; Desktop: full label */}
                   <span className="sm:hidden text-[11px]">{tab.shortLabel}</span>
                   <span className="hidden sm:inline">{tab.label}</span>
                   {isLocked && (
-                    <span className="hidden sm:inline text-[9px] bg-slate-800 text-slate-500 px-1 py-0.5 rounded ml-1">
+                    <span
+                      className="hidden sm:inline text-[9px] px-1 py-0.5 rounded ml-1"
+                      style={{ backgroundColor: 'var(--bg-badge)', color: 'var(--text-subtle)' }}
+                    >
                       LOCKED
                     </span>
                   )}

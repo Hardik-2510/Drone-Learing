@@ -25,7 +25,7 @@ export const SafetyModal = () => {
             <Flame className="w-4 h-4 text-amber-400 shrink-0 mt-0.5" />
             <span>{safetyAlert.title}</span>
           </div>
-          <p className="text-xs text-slate-300 leading-relaxed font-sans">
+          <p className="text-xs leading-relaxed font-sans" style={{ color: 'var(--text-secondary)' }}>
             {safetyAlert.message}
           </p>
         </div>
@@ -44,7 +44,8 @@ export const SafetyModal = () => {
 
           <button
             onClick={() => setSafetyAlert(null)}
-            className="w-full py-2 bg-slate-800 hover:bg-slate-700 text-slate-300 font-mono text-xs rounded-lg flex items-center justify-center gap-1 transition-all"
+            className="w-full py-2 font-mono text-xs rounded-lg flex items-center justify-center gap-1 transition-all border"
+            style={{ backgroundColor: 'var(--bg-elevated)', borderColor: 'var(--border)', color: 'var(--text-secondary)' }}
           >
             <XCircle className="w-3.5 h-3.5" />
             Dismiss Hazard Warning

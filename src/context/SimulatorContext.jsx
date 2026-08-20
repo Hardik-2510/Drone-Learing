@@ -1,4 +1,4 @@
-import React, { createContext, useContext, useState, useMemo, useEffect } from 'react';
+import React, { createContext, useContext, useState, useMemo, useEffect, useCallback } from 'react';
 import { soundFx } from '../audio/audioSynthesizer';
 import confetti from 'canvas-confetti';
 
@@ -9,6 +9,26 @@ let _logId = 100;
 const nextLogId = () => ++_logId;
 
 export const SimulatorProvider = ({ children }) => {
+  // ── Theme State ──────────────────────────────────────
+  const [theme, setTheme] = useState(() => {
+    try { return localStorage.getItem('gcs-theme') || 'dark'; } catch { return 'dark'; }
+  });
+
+  // Apply theme class to <html> element
+  useEffect(() => {
+    const root = document.documentElement;
+    if (theme === 'light') {
+      root.classList.add('light');
+    } else {
+      root.classList.remove('light');
+    }
+    try { localStorage.setItem('gcs-theme', theme); } catch {}
+  }, [theme]);
+
+  const toggleTheme = useCallback(() => {
+    setTheme(prev => (prev === 'dark' ? 'light' : 'dark'));
+  }, []);
+
   // Virtual Bench State
   const [propsInstalled, setPropsInstalled] = useState(true);
   const [usbConnected, setUsbConnected] = useState(false);
@@ -371,6 +391,8 @@ export const SimulatorProvider = ({ children }) => {
   return (
     <SimulatorContext.Provider
       value={{
+        theme,
+        toggleTheme,
         propsInstalled,
         usbConnected,
         lipoConnected,

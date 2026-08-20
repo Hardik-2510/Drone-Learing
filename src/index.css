@@ -1,103 +1,198 @@
 @import "tailwindcss";
 
+/* =====================================================
+   THEME TOKENS — Dark (default) & Light
+   ===================================================== */
+:root {
+  /* Backgrounds */
+  --bg-base:        #080c14;
+  --bg-panel:       #0d1322;
+  --bg-header:      #0a0f1d;
+  --bg-surface:     #0f172a;
+  --bg-surface-2:   #1e293b;
+  --bg-elevated:    #0f172a;
+  --bg-input:       #0f172a;
+  --bg-input-hover: #1e293b;
+  --bg-badge:       #1e293b;
+  --bg-muted:       rgba(15, 23, 42, 0.8);
+  --bg-overlay:     rgba(8, 12, 20, 0.85);
+
+  /* Borders */
+  --border:         #1e293b;
+  --border-subtle:  #0f172a;
+  --border-muted:   rgba(51, 65, 85, 0.5);
+
+  /* Text */
+  --text-primary:   #f8fafc;
+  --text-secondary: #cbd5e1;
+  --text-muted:     #94a3b8;
+  --text-subtle:    #64748b;
+  --text-faint:     #475569;
+
+  /* Scrollbar */
+  --scrollbar-track: #0f172a;
+  --scrollbar-thumb: #334155;
+  --scrollbar-hover: #475569;
+
+  /* Accents — same in both themes */
+  --accent-purple:  #a855f7;
+  --accent-cyan:    #22d3ee;
+  --accent-emerald: #34d399;
+
+  /* Glass card */
+  --glass-bg:       rgba(15, 23, 42, 0.75);
+  --glass-border:   rgba(51, 65, 85, 0.5);
+  --glass-shadow:   rgba(0, 0, 0, 0.37);
+
+  /* Select */
+  --select-text-cyan:    #67e8f9;
+  --select-text-emerald: #6ee7b7;
+}
+
+/* ── Light theme overrides ────────────────────────── */
+html.light {
+  /* Backgrounds */
+  --bg-base:        #f0f4fa;
+  --bg-panel:       #ffffff;
+  --bg-header:      #e8eef8;
+  --bg-surface:     #f8fafc;
+  --bg-surface-2:   #e2e8f0;
+  --bg-elevated:    #f1f5f9;
+  --bg-input:       #f8fafc;
+  --bg-input-hover: #f1f5f9;
+  --bg-badge:       #e2e8f0;
+  --bg-muted:       rgba(248, 250, 252, 0.9);
+  --bg-overlay:     rgba(240, 244, 250, 0.92);
+
+  /* Borders */
+  --border:         #cbd5e1;
+  --border-subtle:  #e2e8f0;
+  --border-muted:   rgba(148, 163, 184, 0.4);
+
+  /* Text */
+  --text-primary:   #0f172a;
+  --text-secondary: #1e293b;
+  --text-muted:     #475569;
+  --text-subtle:    #64748b;
+  --text-faint:     #94a3b8;
+
+  /* Scrollbar */
+  --scrollbar-track: #e2e8f0;
+  --scrollbar-thumb: #94a3b8;
+  --scrollbar-hover: #64748b;
+
+  /* Glass card */
+  --glass-bg:       rgba(255, 255, 255, 0.75);
+  --glass-border:   rgba(148, 163, 184, 0.4);
+  --glass-shadow:   rgba(0, 0, 0, 0.10);
+
+  /* Select */
+  --select-text-cyan:    #0891b2;
+  --select-text-emerald: #059669;
+}
+
+/* =====================================================
+   ANIMATIONS
+   ===================================================== */
 @layer utilities {
   @keyframes spinPropeller {
-    0% { transform: rotate(0deg); }
+    0%   { transform: rotate(0deg); }
     100% { transform: rotate(360deg); }
   }
 
   @keyframes ledBlinkFast {
     0%, 100% { opacity: 1; }
-    50% { opacity: 0.2; }
+    50%       { opacity: 0.2; }
   }
 
   @keyframes ledBlinkSlow {
     0%, 100% { opacity: 1; }
-    50% { opacity: 0.3; }
+    50%       { opacity: 0.3; }
   }
 
   @keyframes pulseGlowRed {
-    0%, 100% { box-shadow: 0 0 15px rgba(239, 68, 68, 0.8), 0 0 30px rgba(239, 68, 68, 0.4); }
-    50% { box-shadow: 0 0 35px rgba(239, 68, 68, 1), 0 0 60px rgba(239, 68, 68, 0.7); }
+    0%, 100% { box-shadow: 0 0 15px rgba(239,68,68,0.8), 0 0 30px rgba(239,68,68,0.4); }
+    50%       { box-shadow: 0 0 35px rgba(239,68,68,1),   0 0 60px rgba(239,68,68,0.7); }
   }
 
-  .animate-spin-prop {
-    animation: spinPropeller 0.15s linear infinite;
-  }
-
-  .animate-led-fast {
-    animation: ledBlinkFast 0.3s ease-in-out infinite;
-  }
-
-  .animate-led-slow {
-    animation: ledBlinkSlow 1s ease-in-out infinite;
-  }
-
-  .animate-pulse-glow-red {
-    animation: pulseGlowRed 0.8s ease-in-out infinite;
-  }
+  .animate-spin-prop      { animation: spinPropeller 0.15s linear infinite; }
+  .animate-led-fast       { animation: ledBlinkFast  0.3s  ease-in-out infinite; }
+  .animate-led-slow       { animation: ledBlinkSlow  1s    ease-in-out infinite; }
+  .animate-pulse-glow-red { animation: pulseGlowRed  0.8s  ease-in-out infinite; }
 }
 
-/* Custom scrollbars */
-::-webkit-scrollbar {
-  width: 6px;
-  height: 6px;
-}
+/* =====================================================
+   CUSTOM SCROLLBARS
+   ===================================================== */
+::-webkit-scrollbar       { width: 6px; height: 6px; }
+::-webkit-scrollbar-track { background: var(--scrollbar-track); }
+::-webkit-scrollbar-thumb { background: var(--scrollbar-thumb); border-radius: 3px; }
+::-webkit-scrollbar-thumb:hover { background: var(--scrollbar-hover); }
 
-::-webkit-scrollbar-track {
-  background: #0f172a;
-}
-
-::-webkit-scrollbar-thumb {
-  background: #334155;
-  border-radius: 3px;
-}
-
-::-webkit-scrollbar-thumb:hover {
-  background: #475569;
-}
-
-*, *::before, *::after {
-  box-sizing: border-box;
-}
+/* =====================================================
+   BASE
+   ===================================================== */
+*, *::before, *::after { box-sizing: border-box; }
 
 body {
   margin: 0;
   padding: 0;
-  background-color: #080c14;
-  color: #f8fafc;
-  font-family: ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+  background-color: var(--bg-base);
+  color: var(--text-primary);
+  font-family: ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont,
+    "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
   overflow-x: hidden;
+  transition: background-color 0.3s ease, color 0.3s ease;
 }
 
-/* Remove tap highlight on mobile interactive elements */
+/* Remove tap highlight on mobile */
 button, a {
   -webkit-tap-highlight-color: transparent;
   touch-action: manipulation;
 }
 
-/* Scrollbar utility for overflow-x scroll containers */
-.scrollbar-none {
-  scrollbar-width: none;
-  -ms-overflow-style: none;
-}
-.scrollbar-none::-webkit-scrollbar {
-  display: none;
-}
+/* =====================================================
+   SCROLLBAR UTILITY
+   ===================================================== */
+.scrollbar-none { scrollbar-width: none; -ms-overflow-style: none; }
+.scrollbar-none::-webkit-scrollbar { display: none; }
 
+/* =====================================================
+   SHARED PANEL CLASSES — now theme-aware
+   ===================================================== */
 .glass-card {
-  background: rgba(15, 23, 42, 0.75);
+  background: var(--glass-bg);
   backdrop-filter: blur(12px);
-  border: 1px solid rgba(51, 65, 85, 0.5);
-  box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.37);
+  border: 1px solid var(--glass-border);
+  box-shadow: 0 8px 32px 0 var(--glass-shadow);
+  transition: background 0.3s ease, border-color 0.3s ease;
 }
 
 .gcs-panel {
-  background: #0d1322;
-  border: 1px solid #1e293b;
+  background: var(--bg-panel);
+  border: 1px solid var(--border);
+  transition: background 0.3s ease, border-color 0.3s ease;
 }
 
 .gcs-header {
-  background: #0a0f1d;
-  border-bottom: 1px solid #1e293b;
+  background: var(--bg-header);
+  border-bottom: 1px solid var(--border);
+  transition: background 0.3s ease, border-color 0.3s ease;
 }
+
+/* =====================================================
+   THEME-AWARE UTILITY HELPERS
+   These replace specific hardcoded Tailwind shades
+   ===================================================== */
+.t-bg-surface   { background-color: var(--bg-surface); }
+.t-bg-surface-2 { background-color: var(--bg-surface-2); }
+.t-bg-elevated  { background-color: var(--bg-elevated); }
+.t-bg-input     { background-color: var(--bg-input); }
+.t-bg-badge     { background-color: var(--bg-badge); }
+
+.t-text         { color: var(--text-primary); }
+.t-text-muted   { color: var(--text-muted); }
+.t-text-subtle  { color: var(--text-subtle); }
+
+.t-border       { border-color: var(--border); }
+.t-border-subtle{ border-color: var(--border-subtle); }

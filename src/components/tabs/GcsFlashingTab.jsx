@@ -40,25 +40,26 @@ export const GcsFlashingTab = () => {
   return (
     <div className="space-y-4 sm:space-y-6">
       {/* Header */}
-      <div className="gcs-panel p-4 sm:p-5 rounded-xl border border-slate-800 flex flex-wrap items-center justify-between gap-3 sm:gap-4">
+      <div className="gcs-panel p-4 sm:p-5 rounded-xl border flex flex-wrap items-center justify-between gap-3 sm:gap-4" style={{ borderColor: 'var(--border)' }}>
         <div>
           <div className="flex items-center gap-2">
             <Cpu className="w-5 h-5 text-cyan-400" />
-            <h2 className="text-base sm:text-lg font-bold text-slate-100 font-mono tracking-wider">
+            <h2 className="text-base sm:text-lg font-bold font-mono tracking-wider" style={{ color: 'var(--text-primary)' }}>
               <span className="hidden sm:inline">MISSION PLANNER - </span>FIRMWARE INSTALLATION
             </h2>
           </div>
-          <p className="text-xs text-slate-400 font-sans mt-0.5">
+          <p className="text-xs font-sans mt-0.5" style={{ color: 'var(--text-muted)' }}>
             Simulate ArduPilot bootloader handshake & firmware flash state machine for Radiolink Crossflight V2.
           </p>
         </div>
 
         <div className="flex items-center gap-2">
-          <span className="text-xs font-mono text-slate-400">MAVLink State:</span>
+          <span className="text-xs font-mono" style={{ color: 'var(--text-muted)' }}>MAVLink State:</span>
           <span
             className={`px-2.5 py-1 rounded text-xs font-mono font-bold ${
-              mavlinkConnected ? 'bg-emerald-950 text-emerald-300 border border-emerald-500' : 'bg-slate-900 text-slate-400 border border-slate-700'
+              mavlinkConnected ? 'bg-emerald-950 text-emerald-300 border border-emerald-500' : 'border'
             }`}
+            style={!mavlinkConnected ? { backgroundColor: 'var(--bg-elevated)', borderColor: 'var(--border)', color: 'var(--text-muted)' } : {}}
           >
             <span className="sm:hidden">{mavlinkConnected ? 'CONNECTED (DISCONNECT TO FLASH)' : 'DISCONNECTED (READY)'}</span>
             <span className="hidden sm:inline">{mavlinkConnected ? 'CONNECTED (DISCONNECT REQUIRED TO FLASH)' : 'DISCONNECTED (READY)'}</span>
@@ -73,7 +74,7 @@ export const GcsFlashingTab = () => {
             <ShieldAlert className="w-6 h-6 text-amber-400 shrink-0" />
             <div>
               <h4 className="text-sm font-bold text-amber-300">ACTIVE CONNECTION LOCK TRIGGERED!</h4>
-              <p className="text-xs text-slate-300 font-sans">
+              <p className="text-xs font-sans" style={{ color: 'var(--text-secondary)' }}>
                 Flashing cannot begin while MAVLink telemetry is actively CONNECTED. You must click DISCONNECT first to free the COM port for bootloader flashing.
               </p>
             </div>
@@ -92,18 +93,19 @@ export const GcsFlashingTab = () => {
 
       {/* Flashing State Wizard */}
       {flashStage === 'CONFIRM' && (
-        <div className="gcs-panel p-6 rounded-xl border-2 border-cyan-500/80 bg-slate-950/90 max-w-xl mx-auto shadow-[0_0_30px_rgba(6,182,212,0.2)] font-mono">
+        <div className="gcs-panel p-6 rounded-xl border-2 border-cyan-500/80 max-w-xl mx-auto shadow-[0_0_30px_rgba(6,182,212,0.2)] font-mono">
           <div className="flex items-center gap-3 text-cyan-400 mb-4">
             <UploadCloud className="w-7 h-7" />
             <h3 className="text-base font-bold">CONFIRM FIRMWARE UPLOAD</h3>
           </div>
-          <p className="text-xs text-slate-300 font-sans mb-4 leading-relaxed">
+          <p className="text-xs font-sans mb-4 leading-relaxed" style={{ color: 'var(--text-secondary)' }}>
             Are you sure you want to upload <span className="font-bold text-cyan-300">ArduCopter V4.5.1 Quad</span> to your Radiolink Crossflight V2 board over USB? Existing parameters will be backed up.
           </p>
           <div className="flex justify-end gap-3">
             <button
               onClick={() => setFlashStage('IDLE')}
-              className="px-4 py-2 bg-slate-800 hover:bg-slate-700 text-slate-300 text-xs rounded-lg"
+              className="px-4 py-2 rounded-lg text-xs border transition-colors"
+              style={{ backgroundColor: 'var(--bg-elevated)', borderColor: 'var(--border)', color: 'var(--text-secondary)' }}
             >
               Cancel
             </button>
@@ -127,8 +129,8 @@ export const GcsFlashingTab = () => {
           <p className="text-xs text-slate-200 font-sans mb-4 leading-relaxed">
             Please reset board now: <span className="font-bold text-purple-300">Unplug USB cable and plug back in</span> on the Virtual Bench to trigger the bootloader handshake.
           </p>
-          <div className="bg-slate-950 p-3 rounded-lg border border-purple-800/60 mb-4 flex items-center justify-between">
-            <span className="text-xs text-slate-400">USB Status:</span>
+          <div className="p-3 rounded-lg border mb-4 flex items-center justify-between" style={{ backgroundColor: 'var(--bg-surface)', borderColor: 'var(--border)' }}>
+            <span className="text-xs" style={{ color: 'var(--text-muted)' }}>USB Status:</span>
             <span className={`text-xs font-bold ${usbConnected ? 'text-emerald-400' : 'text-amber-400'}`}>
               {usbConnected ? 'PLUGGED IN (UNPLUG NEXT)' : 'UNPLUGGED (PLUG BACK IN NEXT)'}
             </span>
@@ -147,24 +149,24 @@ export const GcsFlashingTab = () => {
 
       {/* Active Flashing Progress Screen */}
       {flashStage === 'FLASHING' && (
-        <div className="gcs-panel p-8 rounded-xl border-2 border-red-500/80 bg-slate-950 max-w-2xl mx-auto shadow-[0_0_40px_rgba(239,68,68,0.3)] font-mono">
+        <div className="gcs-panel p-8 rounded-xl border-2 border-red-500/80 max-w-2xl mx-auto shadow-[0_0_40px_rgba(239,68,68,0.3)] font-mono">
           <div className="flex items-center justify-between mb-4">
             <div className="flex items-center gap-3">
               <RefreshCw className="w-6 h-6 text-red-500 animate-spin" />
-              <h3 className="text-base font-bold text-slate-100">PROGRAMMING AUTOPILOT FLASH...</h3>
+              <h3 className="text-base font-bold" style={{ color: 'var(--text-primary)' }}>PROGRAMMING AUTOPILOT FLASH...</h3>
             </div>
             <span className="text-lg font-bold text-red-400">{flashProgress}%</span>
           </div>
 
           {/* Progress Bar */}
-          <div className="w-full bg-slate-900 rounded-full h-4 overflow-hidden border border-slate-800 p-0.5 mb-4">
+          <div className="w-full rounded-full h-4 overflow-hidden border p-0.5 mb-4" style={{ backgroundColor: 'var(--bg-elevated)', borderColor: 'var(--border)' }}>
             <div
               className="bg-gradient-to-r from-red-600 via-amber-500 to-emerald-500 h-full rounded-full transition-all duration-150 shadow-[0_0_15px_#ef4444]"
               style={{ width: `${flashProgress}%` }}
             />
           </div>
 
-          <div className="bg-slate-900 p-3 rounded-lg border border-slate-800 text-xs text-slate-300 flex items-center justify-between">
+          <div className="p-3 rounded-lg border text-xs flex items-center justify-between" style={{ backgroundColor: 'var(--bg-elevated)', borderColor: 'var(--border)', color: 'var(--text-secondary)' }}>
             <span>Stage: {flashStatusText}</span>
             <span className="text-[10px] text-red-400 font-bold animate-pulse">FC LED: SOLID RED</span>
           </div>
@@ -178,7 +180,7 @@ export const GcsFlashingTab = () => {
             <CheckCircle2 className="w-10 h-10 mx-auto text-emerald-400" />
           </div>
           <h3 className="text-lg font-bold text-emerald-300 mb-1">UPLOAD DONE & VERIFIED!</h3>
-          <p className="text-xs text-slate-300 font-sans mb-4">
+          <p className="text-xs font-sans mb-4" style={{ color: 'var(--text-secondary)' }}>
             ArduCopter V4.5.1 Quad firmware successfully flashed to Radiolink Crossflight V2. Musical startup chime played!
           </p>
           <button
@@ -193,7 +195,7 @@ export const GcsFlashingTab = () => {
       {/* Target Firmware Vehicle Selection Grid */}
       {flashStage === 'IDLE' && (
         <div>
-          <h3 className="text-sm font-bold font-mono text-slate-300 uppercase tracking-wider mb-4">
+          <h3 className="text-sm font-bold font-mono uppercase tracking-wider mb-4" style={{ color: 'var(--text-secondary)' }}>
             Select Target Vehicle Firmware Icon:
           </h3>
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3 sm:gap-4">
@@ -208,22 +210,23 @@ export const GcsFlashingTab = () => {
                   className={`gcs-panel p-5 rounded-xl border transition-all cursor-pointer relative overflow-hidden group ${
                     isQuad
                       ? 'border-purple-500/80 hover:border-purple-400 bg-purple-950/20 shadow-[0_0_20px_rgba(168,85,247,0.15)]'
-                      : 'border-slate-800 opacity-60 hover:opacity-80'
+                      : 'opacity-60 hover:opacity-80'
                   }`}
+                  style={!isQuad ? { borderColor: 'var(--border)' } : {}}
                 >
                   <div className="flex items-start justify-between mb-3">
                     <span className="text-4xl">{v.icon}</span>
-                    <span className="text-[10px] font-mono px-2 py-0.5 bg-slate-900 text-cyan-400 rounded border border-slate-700">
+                    <span className="text-[10px] font-mono px-2 py-0.5 rounded border" style={{ backgroundColor: 'var(--bg-elevated)', borderColor: 'var(--border)', color: 'var(--select-text-cyan)' }}>
                       {v.version}
                     </span>
                   </div>
-                  <h4 className="text-base font-bold font-mono text-slate-100 group-hover:text-purple-300 transition-colors">
+                  <h4 className="text-base font-bold font-mono group-hover:text-purple-300 transition-colors" style={{ color: 'var(--text-primary)' }}>
                     {v.name}
                   </h4>
-                  <p className="text-xs text-slate-400 font-sans mt-1">{v.desc}</p>
+                  <p className="text-xs font-sans mt-1" style={{ color: 'var(--text-muted)' }}>{v.desc}</p>
 
-                  <div className="mt-4 pt-3 border-t border-slate-800/80 flex items-center justify-between text-xs font-mono">
-                    <span className="text-[10px] text-slate-500">Board: Crossflight V2</span>
+                  <div className="mt-4 pt-3 border-t flex items-center justify-between text-xs font-mono" style={{ borderColor: 'var(--border)' }}>
+                    <span className="text-[10px]" style={{ color: 'var(--text-subtle)' }}>Board: Crossflight V2</span>
                     <span className={`font-bold ${isQuad ? 'text-purple-400' : 'text-slate-500'}`}>
                       {isQuad ? 'Click to Flash →' : 'Secondary'}
                     </span>

@@ -39,7 +39,7 @@ const MainContent = () => {
   };
 
   return (
-    <div className="min-h-screen bg-[#080c14] text-slate-100 flex flex-col justify-between selection:bg-purple-500 selection:text-white">
+    <div className="min-h-screen flex flex-col justify-between selection:bg-purple-500 selection:text-white" style={{ backgroundColor: 'var(--bg-base)', color: 'var(--text-primary)' }}>
       {/* Top Navbar */}
       <Navbar />
 
@@ -55,7 +55,7 @@ const MainContent = () => {
       <SafetyModal />
 
       {/* Footer */}
-      <footer className="gcs-header py-3 sm:py-4 border-t border-slate-800/80 text-center font-mono text-xs text-slate-500">
+      <footer className="gcs-header py-3 sm:py-4 border-t t-border text-center font-mono text-xs t-text-muted">
         <div className="max-w-7xl mx-auto px-3 sm:px-4 flex flex-wrap items-center justify-between gap-2">
           <div className="flex items-center gap-2">
             <span className="w-2 h-2 rounded-full bg-emerald-400 animate-pulse" />

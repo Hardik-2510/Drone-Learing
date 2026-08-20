@@ -76,21 +76,21 @@ export const RadioCalibGame = () => {
   return (
     <div className="space-y-4 sm:space-y-6 select-none">
       {/* Header */}
-      <div className="gcs-panel p-4 sm:p-5 rounded-xl border border-slate-800 flex flex-wrap items-center justify-between gap-3 sm:gap-4">
+      <div className="gcs-panel p-4 sm:p-5 rounded-xl border flex flex-wrap items-center justify-between gap-3 sm:gap-4" style={{ borderColor: 'var(--border)' }}>
         <div>
           <div className="flex items-center gap-2">
             <Radio className="w-5 h-5 text-purple-400" />
-            <h2 className="text-base sm:text-lg font-bold text-slate-100 font-mono tracking-wider">
+            <h2 className="text-base sm:text-lg font-bold font-mono tracking-wider" style={{ color: 'var(--text-primary)' }}>
               <span className="hidden sm:inline">RADIO CONTROL (RC) TRANSMITTER </span>CALIBRATION
             </h2>
           </div>
-          <p className="text-xs text-slate-400 font-sans mt-0.5">
+          <p className="text-xs font-sans mt-0.5" style={{ color: 'var(--text-muted)' }}>
             Drag virtual joysticks to test PWM limits [1100us - 1900us] & verify channel reversal direction.
           </p>
         </div>
 
         <div className="flex items-center gap-2">
-          <span className="text-xs font-mono text-slate-400">Radio Status:</span>
+          <span className="text-xs font-mono" style={{ color: 'var(--text-muted)' }}>Radio Status:</span>
           <span
             className={`px-3 py-1 rounded text-xs font-mono font-bold ${
               radioState.completed
@@ -110,7 +110,7 @@ export const RadioCalibGame = () => {
             <AlertTriangle className="w-6 h-6 text-amber-400 shrink-0" />
             <div>
               <h4 className="font-bold text-sm text-amber-200">CHANNEL REVERSAL REQUIRED!</h4>
-              <p className="text-[11px] text-slate-300 font-sans">
+              <p className="text-[11px] font-sans" style={{ color: 'var(--text-secondary)' }}>
                 Pitch joystick UP is moving Pitch bar UP! In ArduPilot, pushing Pitch stick UP must decrease PWM / move bar DOWN.
               </p>
             </div>
@@ -126,7 +126,7 @@ export const RadioCalibGame = () => {
 
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-4 sm:gap-6">
         {/* Virtual RC Transmitter Graphic (Left Column) */}
-        <div className="gcs-panel p-4 sm:p-6 rounded-xl border border-slate-800 bg-slate-950 flex flex-col items-center justify-center min-h-[300px] sm:min-h-[380px] relative">
+        <div className="gcs-panel p-4 sm:p-6 rounded-xl border flex flex-col items-center justify-center min-h-[300px] sm:min-h-[380px] relative" style={{ borderColor: 'var(--border)', backgroundColor: 'var(--bg-surface)' }}>
           <div className="text-xs font-mono font-bold text-purple-400 mb-4 flex items-center gap-2">
             <Radio className="w-4 h-4" />
             VIRTUAL RC TRANSMITTER (MODE 2)
@@ -140,12 +140,12 @@ export const RadioCalibGame = () => {
                 ref={leftStickRef}
                 onMouseDown={(e) => handlePointerDown(e, 'left')}
                 onTouchStart={(e) => handlePointerDown(e, 'left')}
-                className="w-40 h-40 sm:w-40 sm:h-40 bg-slate-900 border-2 border-slate-700 rounded-2xl relative flex items-center justify-center cursor-crosshair shadow-inner"
-                style={{ width: 'min(160px, 42vw)', height: 'min(160px, 42vw)' }}
+                className="rounded-2xl relative flex items-center justify-center cursor-crosshair shadow-inner border-2"
+                style={{ width: 'min(160px, 42vw)', height: 'min(160px, 42vw)', backgroundColor: 'var(--bg-elevated)', borderColor: 'var(--border)' }}
               >
                 {/* Crosshair guide lines */}
-                <div className="absolute w-full h-[1px] bg-slate-800" />
-                <div className="absolute h-full w-[1px] bg-slate-800" />
+                <div className="absolute w-full h-[1px]" style={{ backgroundColor: 'var(--border)' }} />
+                <div className="absolute h-full w-[1px]" style={{ backgroundColor: 'var(--border)' }} />
 
                 {/* Joystick Knob */}
                 <div
@@ -157,7 +157,7 @@ export const RadioCalibGame = () => {
                   }}
                 />
               </div>
-              <span className="text-[11px] font-mono text-slate-400 mt-2 font-bold">
+              <span className="text-[11px] font-mono mt-2 font-bold" style={{ color: 'var(--text-muted)' }}>
                 Left: Throttle / Yaw
               </span>
             </div>
@@ -168,12 +168,12 @@ export const RadioCalibGame = () => {
                 ref={rightStickRef}
                 onMouseDown={(e) => handlePointerDown(e, 'right')}
                 onTouchStart={(e) => handlePointerDown(e, 'right')}
-                className="bg-slate-900 border-2 border-slate-700 rounded-2xl relative flex items-center justify-center cursor-crosshair shadow-inner"
-                style={{ width: 'min(160px, 42vw)', height: 'min(160px, 42vw)' }}
+                className="rounded-2xl relative flex items-center justify-center cursor-crosshair shadow-inner border-2"
+                style={{ width: 'min(160px, 42vw)', height: 'min(160px, 42vw)', backgroundColor: 'var(--bg-elevated)', borderColor: 'var(--border)' }}
               >
                 {/* Crosshair guide lines */}
-                <div className="absolute w-full h-[1px] bg-slate-800" />
-                <div className="absolute h-full w-[1px] bg-slate-800" />
+                <div className="absolute w-full h-[1px]" style={{ backgroundColor: 'var(--border)' }} />
+                <div className="absolute h-full w-[1px]" style={{ backgroundColor: 'var(--border)' }} />
 
                 {/* Joystick Knob */}
                 <div
@@ -185,7 +185,7 @@ export const RadioCalibGame = () => {
                   }}
                 />
               </div>
-              <span className="text-[11px] font-mono text-slate-400 mt-2 font-bold">
+              <span className="text-[11px] font-mono mt-2 font-bold" style={{ color: 'var(--text-muted)' }}>
                 Right: Roll / Pitch
               </span>
             </div>
@@ -193,10 +193,10 @@ export const RadioCalibGame = () => {
         </div>
 
         {/* GCS Live Channel PWM Monitor Bars (Right Column) */}
-        <div className="gcs-panel p-6 rounded-xl border border-slate-800 flex flex-col justify-between font-mono">
+        <div className="gcs-panel p-6 rounded-xl border flex flex-col justify-between font-mono" style={{ borderColor: 'var(--border)' }}>
           <div>
-            <div className="flex items-center justify-between border-b border-slate-800 pb-2 mb-4">
-              <h3 className="text-sm font-bold text-slate-200 uppercase tracking-wider">
+            <div className="flex items-center justify-between border-b pb-2 mb-4" style={{ borderColor: 'var(--border)' }}>
+              <h3 className="text-sm font-bold uppercase tracking-wider" style={{ color: 'var(--text-secondary)' }}>
                 GCS Radio Channel PWM Monitor
               </h3>
               <button
@@ -211,12 +211,12 @@ export const RadioCalibGame = () => {
               {channels.map((ch) => {
                 const percent = Math.max(0, Math.min(100, ((ch.pwm - 1100) / 800) * 100));
                 return (
-                  <div key={ch.id} className="bg-slate-950 p-2.5 rounded-lg border border-slate-800">
+                  <div key={ch.id} className="p-2.5 rounded-lg border" style={{ backgroundColor: 'var(--bg-surface)', borderColor: 'var(--border)' }}>
                     <div className="flex justify-between text-xs mb-1">
-                      <span className="text-slate-300 font-bold">{ch.name}</span>
+                      <span className="font-bold" style={{ color: 'var(--text-secondary)' }}>{ch.name}</span>
                       <span className="text-emerald-400 font-bold">{ch.pwm} µs</span>
                     </div>
-                    <div className="w-full bg-slate-900 h-3 rounded overflow-hidden border border-slate-800 p-0.5">
+                    <div className="w-full h-3 rounded overflow-hidden border p-0.5" style={{ backgroundColor: 'var(--bg-elevated)', borderColor: 'var(--border)' }}>
                       <div
                         className="bg-emerald-500 h-full rounded transition-all duration-100"
                         style={{ width: `${percent}%` }}

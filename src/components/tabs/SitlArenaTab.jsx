@@ -503,10 +503,10 @@ export const SitlArenaTab = () => {
     return (
       <div className="flex flex-col items-center justify-center h-[600px] bg-slate-950/80 rounded-xl border-2 border-red-600/50 shadow-[0_0_50px_rgba(220,38,38,0.2)]">
         <div className="text-red-500 font-bold text-3xl mb-4 text-center">🚨 FATAL SAFETY INTERLOCK 🚨</div>
-        <div className="text-slate-300 font-mono text-center max-w-lg mb-6">
+        <div className="font-mono text-center max-w-lg mb-6" style={{ color: 'var(--text-secondary)' }}>
           System detected an unauthorized attempt to enter the Flight Controller SITL Arena while hardware calibrations are incomplete. This violates basic aviation safety principles.
         </div>
-        <div className="text-slate-500 text-sm">Please return to the Virtual Bench and complete all mandatory steps.</div>
+        <div className="text-sm" style={{ color: 'var(--text-subtle)' }}>Please return to the Virtual Bench and complete all mandatory steps.</div>
       </div>
     );
   }
@@ -540,33 +540,34 @@ export const SitlArenaTab = () => {
   return (
     <div className="space-y-3 sm:space-y-4 font-mono select-none">
       {/* Header bar */}
-      <div className="gcs-panel p-4 rounded-xl border border-slate-800 flex flex-wrap items-center justify-between gap-3">
+      <div className="gcs-panel p-4 rounded-xl border flex flex-wrap items-center justify-between gap-3" style={{ borderColor: 'var(--border)' }}>
         <div>
           <div className="flex items-center gap-2 flex-wrap">
             <Layers className="w-5 h-5 text-purple-400" />
-            <h2 className="text-sm sm:text-base font-bold text-slate-100 tracking-wider">
+            <h2 className="text-sm sm:text-base font-bold tracking-wider" style={{ color: 'var(--text-primary)' }}>
               <span className="hidden sm:inline">3D SITL FLIGHT ARENA — </span>UTU BARDOLI CAMPUS
             </h2>
             <span className="px-2 py-0.5 text-[10px] bg-emerald-900/60 text-emerald-300 border border-emerald-700/50 rounded-full hidden sm:inline">
               Three.js + Leaflet
             </span>
           </div>
-          <p className="text-xs text-slate-400 font-sans mt-0.5 hidden sm:block">
+          <p className="text-xs font-sans mt-0.5 hidden sm:block" style={{ color: 'var(--text-muted)' }}>
             ↑↓ Throttle&nbsp;·&nbsp;←→ Yaw&nbsp;·&nbsp;W/S Pitch&nbsp;·&nbsp;A/D Roll — Arrow keys won't scroll the page
           </p>
-          <p className="text-xs text-slate-400 font-sans mt-0.5 sm:hidden">
+          <p className="text-xs font-sans mt-0.5 sm:hidden" style={{ color: 'var(--text-muted)' }}>
             Use on-screen D-pad below to fly
           </p>
         </div>
 
         <div className="flex items-center gap-2 flex-wrap">
           {/* View toggle — hide 'SPLIT' on mobile since viewports would be too narrow */}
-          <div className="flex bg-slate-900 border border-slate-700 rounded-lg overflow-hidden text-[10px] font-bold">
+          <div className="flex border rounded-lg overflow-hidden text-[10px] font-bold" style={{ backgroundColor: 'var(--bg-elevated)', borderColor: 'var(--border)' }}>
             {['3d', 'split', 'map'].map((v) => (
               <button
                 key={v}
                 onClick={() => setActiveView(v)}
-                className={`px-2.5 py-1.5 transition-all ${activeView === v ? 'bg-purple-700 text-white' : 'text-slate-400 hover:text-slate-200'} ${v === 'split' ? 'hidden sm:block' : ''}`}
+                className={`px-2.5 py-1.5 transition-all ${activeView === v ? 'bg-purple-700 text-white' : ''} ${v === 'split' ? 'hidden sm:block' : ''}`}
+                style={activeView !== v ? { color: 'var(--text-muted)' } : {}}
               >
                 {v === '3d' ? '3D ONLY' : v === 'split' ? 'SPLIT' : 'MAP'}
               </button>
@@ -576,7 +577,8 @@ export const SitlArenaTab = () => {
           <select
             value={flightMode}
             onChange={(e) => handleModeChange(e.target.value)}
-            className="bg-slate-900 text-purple-300 text-xs font-bold px-2 py-1.5 rounded-lg border border-slate-700 focus:outline-none"
+            className="text-purple-300 text-xs font-bold px-2 py-1.5 rounded-lg border focus:outline-none"
+            style={{ backgroundColor: 'var(--bg-elevated)', borderColor: 'var(--border)' }}
           >
             <option value="STABILIZE">STABILIZE</option>
             <option value="ALT_HOLD">ALT_HOLD</option>
@@ -715,7 +717,7 @@ export const SitlArenaTab = () => {
       </div>
 
       {/* Quick controls guide — keyboard (desktop only) */}
-      <div className="gcs-panel p-3 rounded-xl border border-slate-800 hidden sm:block">
+      <div className="gcs-panel p-3 rounded-xl border hidden sm:block" style={{ borderColor: 'var(--border)' }}>
         <div className="flex flex-wrap gap-4 items-center justify-center text-[10px] font-mono">
           {[
             ['↑', 'Throttle Up'],
@@ -728,25 +730,25 @@ export const SitlArenaTab = () => {
             ['D', 'Roll Right'],
           ].map(([key, label]) => (
             <div key={key} className="flex items-center gap-1.5">
-              <kbd className="bg-slate-800 border border-slate-600 text-slate-200 px-2 py-0.5 rounded text-[10px] font-bold min-w-[26px] text-center shadow">
+              <kbd className="border text-xs font-bold px-2 py-0.5 rounded min-w-[26px] text-center shadow" style={{ backgroundColor: 'var(--bg-badge)', borderColor: 'var(--border)', color: 'var(--text-secondary)' }}>
                 {key}
               </kbd>
-              <span className="text-slate-500">{label}</span>
+              <span className="text-[10px]" style={{ color: 'var(--text-subtle)' }}>{label}</span>
             </div>
           ))}
         </div>
       </div>
 
       {/* On-screen D-pad — mobile only (sm:hidden) */}
-      <div className="sm:hidden gcs-panel p-4 rounded-xl border border-slate-800">
-        <div className="text-[10px] font-mono text-slate-400 uppercase tracking-wider text-center mb-3">
+      <div className="sm:hidden gcs-panel p-4 rounded-xl border" style={{ borderColor: 'var(--border)' }}>
+        <div className="text-[10px] font-mono uppercase tracking-wider text-center mb-3" style={{ color: 'var(--text-muted)' }}>
           On-Screen Flight Controls
         </div>
         <div className="flex items-start justify-around gap-3">
 
           {/* Left side — Throttle (up/down) + Yaw (left/right) */}
           <div className="flex flex-col items-center gap-1">
-            <div className="text-[9px] font-mono text-slate-500 uppercase mb-1">Throttle / Yaw</div>
+            <div className="text-[9px] font-mono uppercase mb-1" style={{ color: 'var(--text-subtle)' }}>Throttle / Yaw</div>
             {/* Up (throttle) */}
             <button
               onTouchStart={() => { keysRef.current['ArrowUp'] = true; }}
@@ -785,7 +787,7 @@ export const SitlArenaTab = () => {
 
           {/* Right side — Pitch (W/S) + Roll (A/D) */}
           <div className="flex flex-col items-center gap-1">
-            <div className="text-[9px] font-mono text-slate-500 uppercase mb-1">Pitch / Roll</div>
+            <div className="text-[9px] font-mono uppercase mb-1" style={{ color: 'var(--text-subtle)' }}>Pitch / Roll</div>
             {/* W (pitch forward) */}
             <button
               onTouchStart={() => { keysRef.current['w'] = true; }}
@@ -823,7 +825,7 @@ export const SitlArenaTab = () => {
           </div>
         </div>
 
-        <div className="text-center mt-3 text-[10px] font-mono text-slate-600">
+        <div className="text-center mt-3 text-[10px] font-mono" style={{ color: 'var(--text-subtle)' }}>
           Left pad: ↑↓ Throttle · ←→ Yaw &nbsp;|&nbsp; Right pad: W/S Pitch · A/D Roll
         </div>
       </div>
