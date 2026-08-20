@@ -401,7 +401,7 @@ export const SitlArenaTab = () => {
       if (mapUpdateCounter >= 6) {
         mapUpdateCounter = 0;
         const meters_x = posRef.current.x * METERS_PER_UNIT;
-        const meters_z = -posRef.current.z * METERS_PER_UNIT; // negative Z = north
+        const meters_z = posRef.current.z * METERS_PER_UNIT; // positive Z = north (forward)
         const newLat = UTU_LAT + meters_z * DEG_PER_METER_LAT;
         const newLng = UTU_LNG + meters_x * DEG_PER_METER_LNG;
         setDroneLat(newLat);
@@ -433,18 +433,18 @@ export const SitlArenaTab = () => {
 
     animate();
 
-    const onResize = () => {
+    const resizeObserver = new ResizeObserver(() => {
       const W2 = container.clientWidth || 640;
       const H2 = container.clientHeight || 400;
       camera.aspect = W2 / H2;
       camera.updateProjectionMatrix();
       renderer.setSize(W2, H2);
-    };
-    window.addEventListener('resize', onResize);
+    });
+    resizeObserver.observe(container);
 
     return () => {
       cancelAnimationFrame(rafRef.current);
-      window.removeEventListener('resize', onResize);
+      resizeObserver.disconnect();
       
       // ✅ Explicitly dispose geometries, materials, and textures to prevent WebGL memory leaks
       scene.traverse((object) => {
